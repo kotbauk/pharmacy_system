@@ -3,46 +3,51 @@ package connection;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 
-public class JdbcConnection implements AutoCloseable {
-    private final Connection connection;
-    private boolean closed = false;
+public final class JdbcConnection {
+    private static volatile JdbcConnection instance;
+    private final String url;
+    private final Properties props;
 
-    public JdbcConnection(Properties properties){
-        final String username = properties.getProperty("db.user");
-        final String password = properties.getProperty("db.password");
-        final String url = properties.getProperty("db.url");
-        final String driverName = properties.getProperty("db.driverName");
+    private JdbcConnection(Properties properties) {
+        String username = properties.getProperty("db.user");
+        String password = properties.getProperty("db.password");
+        url = properties.getProperty("db.url");
+        String driverName = properties.getProperty("db.driverName");
 
-        Properties props = new Properties();
+        props = new Properties();
         props.setProperty("user", username);
         props.setProperty("password", password);
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
         Locale.setDefault(Locale.ENGLISH);
 
         try {
-            DriverManager.registerDriver((Driver) Class.forName(driverName).newInstance());
-            connection = DriverManager.getConnection(url, props);
-        } catch (Exception e){
+            Class.forName(driverName);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Connection getConnection() {
-        if (closed){
-            throw new IllegalStateException();
+    public static JdbcConnection getInstance(Properties props) {
+        JdbcConnection results = instance;
+        if (results != null) {
+            return results;
         }
-        return connection;
+
+        synchronized (JdbcConnection.class) {
+            if (instance == null) {
+                instance = new JdbcConnection(props);
+            }
+            return instance;
+        }
     }
 
-    @Override
-    public void close() throws Exception {
-        if (connection != null){
-            connection.close();
-            closed = true;
-        }
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(url, props);
     }
+
 }
