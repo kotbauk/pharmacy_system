@@ -23,13 +23,9 @@ public class MedicineInStock extends Page {
         final JScrollPane pane = new JScrollPane(drugTable);
         final JButton okButton = new JButton("Ok");
 
-
-        typeComboBox.addItem(model.Type.OINTMENTS);
-        typeComboBox.addItem(model.Type.PILLS);
-        typeComboBox.addItem(model.Type.POWDERS);
-        typeComboBox.addItem(model.Type.SOLUTE);
-        typeComboBox.addItem(model.Type.POTIONS);
-        typeComboBox.addItem(model.Type.TINCTURES);
+        for(model.Type type: model.Type.values()){
+            typeComboBox.addItem(type);
+        }
 
         okButton.addActionListener(e -> {
             try {
