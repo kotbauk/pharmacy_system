@@ -8,17 +8,15 @@ public class Order {
     private final User seller;
     private final User technologist;
     private final String status;
-    private final Prescription prescription;
     private final Instant dateOfOrder;
     private final Instant dateOfManufacturing;
     private final Instant dateOfReceive;
 
-    public Order(UUID id, User seller, User technologist, Prescription prescription, String status, Instant dateOfOrder, Instant dateOfManufacturing, Instant dateOfReceive) {
+    public Order(UUID id, User seller, User technologist, String status, Instant dateOfOrder, Instant dateOfManufacturing, Instant dateOfReceive) {
         this.id = id;
         this.seller = seller;
         this.technologist = technologist;
         this.status = status;
-        this.prescription = prescription;
         this.dateOfOrder = dateOfOrder;
         this.dateOfManufacturing = dateOfManufacturing;
         this.dateOfReceive = dateOfReceive;
@@ -34,10 +32,6 @@ public class Order {
 
     public User getTechnologist() {
         return technologist;
-    }
-
-    public Prescription getRecipe() {
-        return prescription;
     }
 
     public Instant getDateOfOrder() {

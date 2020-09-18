@@ -45,7 +45,7 @@ public class BuyersByMedicineFrequency extends Page {
                         Helper.getBuyersByFreqCategory((model.Type) categoryCheckBox.getSelectedItem());
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
-                orderList.forEach(o -> model.addRow(new Object[]{o.getRecipe().getBuyer(), o.getRecipe().getMedicine()}));
+               // orderList.forEach(o -> model.addRow(new Object[]{o.getRecipe().getBuyer(), o.getRecipe().getMedicine()}));
                 orderTable.setModel(model);
                 countValueLabel.setText(String.valueOf(orderList.size()));
                 validateTree();

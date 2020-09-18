@@ -14,7 +14,6 @@ public class OrderRowMapper implements RowMapper<Order> {
         return new Order(UUID.fromString(rs.getString("order_id")),
                 new SellerRowMapper().mapRow(rs, rowNum),
                 new TechnologistRowMapper().mapRow(rs, rowNum),
-                new PrescriptionRowMapper().mapRow(rs, rowNum),
                 rs.getString("status"),
                 (dateOfManufacturing = rs.getTimestamp("order_date_of_order")) == null ? null : dateOfManufacturing.toInstant(),
                 (dateOfReceive = rs.getTimestamp("order_date_of_manufacturing")) == null ? null : dateOfReceive.toInstant(),

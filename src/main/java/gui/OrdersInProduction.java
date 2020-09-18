@@ -23,7 +23,7 @@ public class OrdersInProduction extends Page {
             final List<Order> orderList = Helper.getOrdersInProduction();
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
-            orderList.forEach(e -> model.addRow(new Object[]{e.getId(), e.getSeller(), e.getTechnologist(), e.getRecipe(), e.getDateOfOrder()}));
+            //orderList.forEach(e -> model.addRow(new Object[]{e.getId(), e.getSeller(), e.getTechnologist(), e.getRecipe(), e.getDateOfOrder()}));
             orderTable.setModel(model);
             countValueLabel.setText(String.valueOf(orderList.size()));
         } catch (SQLException e) {
