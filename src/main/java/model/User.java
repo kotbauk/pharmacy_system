@@ -2,8 +2,8 @@ package model;
 
 import java.util.UUID;
 
-public class User implements DbEntity{
-    final private UUID id;
+public class User {
+    private final UUID id;
     final private Role role;
     final private String login;
     final private String password;
@@ -19,10 +19,6 @@ public class User implements DbEntity{
         this.surname = surname;
         this.middleName = middleName;
         this.name = name;
-    }
-
-    public User(User user){
-        this(user.id, user.role, user.login, user.password, user.surname, user.middleName, user.name);
     }
 
     public Role getRole() {

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class DetailedBuyerRowMapper implements RowMapper<Buyer>{
+public class DetailedBuyerRowMapper implements RowMapper<Buyer> {
     @Override
     public Buyer mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Buyer(UUID.fromString(rs.getString("buyer_id")),

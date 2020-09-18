@@ -3,7 +3,7 @@ package model;
 import java.time.Instant;
 import java.util.UUID;
 
-public class Buyer implements DbEntity {
+public class Buyer {
     final private UUID id;
     final private String surname;
     final private String middleName;
@@ -11,10 +11,6 @@ public class Buyer implements DbEntity {
     final private Instant dateOfBirth;
     final private Long phoneNumber;
     final private String address;
-
-    public Buyer(Buyer buyer) {
-        this(buyer.id, buyer.surname, buyer.middleName, buyer.name, buyer.dateOfBirth, buyer.phoneNumber, buyer.address);
-    }
 
     public Buyer(UUID id, String surname, String middleName, String name, Instant dateOfBirth, Long phoneNumber, String adress) {
         this.id = id;

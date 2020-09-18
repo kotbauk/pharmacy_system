@@ -2,7 +2,8 @@ package query;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
-interface RowMapper<T> {
+public interface RowMapper<T> {
     T mapRow(ResultSet rs, int rowNum) throws SQLException;
 }

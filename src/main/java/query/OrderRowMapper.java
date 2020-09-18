@@ -15,7 +15,8 @@ public class OrderRowMapper implements RowMapper<Order> {
                 new SellerRowMapper().mapRow(rs, rowNum),
                 new TechnologistRowMapper().mapRow(rs, rowNum),
                 new RecipeRowMapper().mapRow(rs, rowNum),
-                (dateOfManufacturing =rs.getTimestamp("order_date_of_order")) == null ? null : dateOfManufacturing.toInstant(),
+                rs.getString("status"),
+                (dateOfManufacturing = rs.getTimestamp("order_date_of_order")) == null ? null : dateOfManufacturing.toInstant(),
                 (dateOfReceive = rs.getTimestamp("order_date_of_manufacturing")) == null ? null : dateOfReceive.toInstant(),
                 rs.getTimestamp("order_date_of_receive").toInstant());
     }

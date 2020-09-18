@@ -3,21 +3,21 @@ package model;
 import java.time.Instant;
 import java.util.UUID;
 
-public class Recipe implements DbEntity {
+public class Prescription {
     private final UUID id;
     private final Buyer buyer;
     private final User doctor;
     private final String diagnosis;
     private final Instant dateOfDone;
-    private final Medicine medicine;
+    private final Drug drug;
 
-    public Recipe(UUID id, Buyer buyer, User doctor, String diagnosis, Instant dateOfDone, Medicine medicine) {
+    public Prescription(UUID id, Buyer buyer, User doctor, String diagnosis, Instant dateOfDone, Drug drug) {
         this.id = id;
         this.buyer = buyer;
         this.doctor = doctor;
         this.diagnosis = diagnosis;
         this.dateOfDone = dateOfDone;
-        this.medicine = medicine;
+        this.drug = drug;
     }
 
     public UUID getId() {
@@ -40,8 +40,8 @@ public class Recipe implements DbEntity {
         return dateOfDone;
     }
 
-    public Medicine getMedicine() {
-        return medicine;
+    public Drug getMedicine() {
+        return drug;
     }
 
     @Override
