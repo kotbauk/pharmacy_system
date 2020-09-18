@@ -1,6 +1,7 @@
 package gui;
 
 import helper.Helper;
+import model.Drug;
 import model.GoodsOnWarehouse;
 import model.Type;
 
@@ -10,38 +11,36 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public class MedicineInStock extends Page {
-    protected MedicineInStock() {
-        super("Medicine in stock");
+public class DrugsOnEnoughAmount extends Page {
+    protected DrugsOnEnoughAmount() {
+        super("Drugs on enough amount");
         final Object[] columnHeader = new String[]{"Medicine", "Count"};
-        final JTable medicineTable = new JTable();
+        final JTable drugTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JComboBox<model.Type> typeComboBox = new JComboBox<>();
         final JCheckBox useCategory = new JCheckBox();
         final JLabel typeLabel = new JLabel("Type");
-        final JLabel rowCountLabel = new JLabel("Row count");
-        final JTextField rowCountTextField = new JTextField();
-        final JScrollPane pane = new JScrollPane(medicineTable);
+        final JScrollPane pane = new JScrollPane(drugTable);
         final JButton okButton = new JButton("Ok");
 
-
-        typeComboBox.addItem(model.Type.OINTMENTS);
-        typeComboBox.addItem(model.Type.PILLS);
-        typeComboBox.addItem(model.Type.POWDERS);
-        typeComboBox.addItem(model.Type.SOLUTE);
-        typeComboBox.addItem(model.Type.POTIONS);
-        typeComboBox.addItem(model.Type.TINCTURES);
+        for(model.Type type: model.Type.values()){
+            typeComboBox.addItem(type);
+        }
 
         okButton.addActionListener(e -> {
             try {
-                final List<GoodsOnWarehouse> medicineList = Helper.getMedicineInStock(useCategory.isSelected() ?
-                                (model.Type) typeComboBox.getSelectedItem() :
-                                null,
-                        Integer.parseInt(rowCountTextField.getText()));
+                final List<Drug> drugList=
+                useCategory.isSelected()?
+                        Helper.getDrugWithMinimalAmountByType((model.Type) typeComboBox.getSelectedItem()) :
+                        Helper.getAllDrugWithMinimalAmount();
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
-               // medicineList.forEach(m -> model.addRow(new Object[]{m.getMedicine(), m.getMedicineCount()}));
-                medicineTable.setModel(model);
+                drugList.forEach(m ->
+                        model.addRow(new Object[]{
+                                m.getName(),
+                                m.getType()
+                                }));
+                drugTable.setModel(model);
                 this.validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -56,8 +55,6 @@ public class MedicineInStock extends Page {
         container.add(typeLabel);
         container.add(typeComboBox);
         container.add(useCategory);
-        container.add(rowCountLabel);
-        container.add(rowCountTextField);
         container.add(pane);
         container.add(okButton);
         container.add(backButton);

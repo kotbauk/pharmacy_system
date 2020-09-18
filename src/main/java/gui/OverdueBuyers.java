@@ -30,10 +30,10 @@ public class OverdueBuyers extends Page {
             try {
                 final List<Buyer> buyersList =
                         Helper.getAllOverdueBuyers();
-                final Integer countOfAllOverdue = Helper.getCountOfAllOverdueBuyers();
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
-                buyersList.forEach(buyer -> model.addRow(new Object[]{buyer.getSurname(),
+                buyersList.forEach(buyer -> model.addRow(new Object[]{
+                        buyer.getSurname(),
                         buyer.getName(),
                         buyer.getMiddleName(),
                         buyer.getDateOfBirth(),

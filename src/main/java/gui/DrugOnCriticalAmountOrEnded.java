@@ -1,6 +1,7 @@
 package gui;
 
 import helper.Helper;
+import model.Drug;
 import model.GoodsOnWarehouse;
 
 import javax.swing.*;
@@ -9,20 +10,29 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public class MedicineOnStockOrMinimum extends Page {
-    protected MedicineOnStockOrMinimum() {
-        super("Medicine in stock or minimum");
-        final Object[] columnHeader = new String[]{"Medicine", "Count"};
+public class DrugOnCriticalAmountOrEnded extends Page {
+    protected DrugOnCriticalAmountOrEnded() {
+        super("Drugs on critical amount");
+        final Object[] columnHeader = new String[]{
+                "Medicine",
+                "DRUG_TYPE",
+                "UNIT",
+                "PRICE_PER_UNIT",};
         final JTable medicineTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JScrollPane pane = new JScrollPane(medicineTable);
 
 
         try {
-            final List<GoodsOnWarehouse> medicineList = Helper.getMedicineInStockOrMinimum();
+            final List<Drug> medicineList =
+                    Helper.getAllDrugsWithMinimalAMountOrEmpted();
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
-            //medicineList.forEach(m -> model.addRow(new Object[]{m.getMedicine(), m.getMedicineCount()}));
+            medicineList.forEach(m -> model.addRow(new Object[]{
+                    m.getName(),
+                    m.getType(),
+                    m.getUnit(),
+                    m.getPricePerUnit()}));
             medicineTable.setModel(model);
         } catch (SQLException ex) {
             ex.printStackTrace();

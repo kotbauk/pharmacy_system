@@ -7,25 +7,28 @@ public class ReportPage extends Page {
     protected ReportPage() {
         super("Report");
         final JButton buyerWithOverdueButton = new JButton("Buyers with overdue");
+        final JButton awaitingBuyer = new JButton("Awaiting buyers");
         final JButton ordersInProductionButton = new JButton("Orders in production");
-        final JButton medicineInStockButton = new JButton("Medicine in stock");
-        final JButton medicineInStockOrMinimumButton = new JButton("Medicine in stock or minimum");
+        final JButton drugsOnEnoughAmount = new JButton("Drugs on enough amount");
+        final JButton drugsOnCriticalAmount = new JButton("Drugs on critical amount");
         final JButton buyersByMedicineOrCategory = new JButton("Buyers by medicine or category");
         final JButton buyersByFreqMedicineOrCategory = new JButton("Buyers by freq medicine or category");
         final JButton backButton = new JButton("Back");
         final Container container = getContentPane();
 
         buyerWithOverdueButton.addActionListener(e -> new GuiManager(new OverdueBuyers()).showPage());
+        awaitingBuyer.addActionListener(e -> new GuiManager(new AwaitingBuyers()).showPage());
         ordersInProductionButton.addActionListener(e -> new GuiManager(new OrdersInProduction()).showPage());
-        medicineInStockButton.addActionListener(e -> new GuiManager(new MedicineInStock()).showPage());
-        medicineInStockOrMinimumButton.addActionListener(e -> new GuiManager(new MedicineOnStockOrMinimum()).showPage());
+        drugsOnEnoughAmount.addActionListener(e -> new GuiManager(new DrugsOnEnoughAmount()).showPage());
+        drugsOnCriticalAmount.addActionListener(e -> new GuiManager(new DrugOnCriticalAmountOrEnded()).showPage());
         buyersByMedicineOrCategory.addActionListener(e -> new GuiManager(new BuyersByMedicine()).showPage());
         buyersByFreqMedicineOrCategory.addActionListener(e -> new GuiManager(new BuyersByMedicineFrequency()).showPage());
         backButton.addActionListener(e -> new GuiManager(new MenuPage()).showPage());
         container.add(buyerWithOverdueButton);
+        container.add(awaitingBuyer);
         container.add(ordersInProductionButton);
-        container.add(medicineInStockButton);
-        container.add(medicineInStockOrMinimumButton);
+        container.add(drugsOnCriticalAmount);
+        container.add(drugsOnEnoughAmount);
         container.add(buyersByMedicineOrCategory);
         container.add(buyersByFreqMedicineOrCategory);
         container.add(backButton);
