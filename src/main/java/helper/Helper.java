@@ -505,7 +505,7 @@ public class Helper {
     //7
     public static List<Drug> getAllDrugWithMinimalAmount() throws SQLException {
         String sqlRequest = "SELECT MFD.name, MFD.type from MANUFACTURED_DRUG MFD\n" +
-                "JOIN GOODS_ON_WAREHOUSE G ON MFD.ID_GOOD = G.ID_GOOD WHERE G.AMOUNT <= G.MINIMAL_AMOUNT;";
+                "JOIN GOODS_ON_WAREHOUSE G ON MFD.ID_GOOD = G.ID_GOOD WHERE G.AMOUNT >= G.MINIMAL_AMOUNT;";
         List<Drug> drugs = AbstractQuery.query(sqlRequest, new DrugWithMinimalAmountRowMapper());
         return drugs;
     }
@@ -513,7 +513,7 @@ public class Helper {
     //7
     public static List<Drug> getDrugWithMinimalAmountByType(Type type) throws SQLException {
         String sqlRequest = "SELECT MFD.name, MFD.type from MANUFACTURED_DRUG MFD\n" +
-                "JOIN GOODS_ON_WAREHOUSE G ON MFD.ID_GOOD = G.ID_GOOD WHERE G.TYPE = ? AND G.AMOUNT = G.MINIMAL_AMOUNT;";
+                "JOIN GOODS_ON_WAREHOUSE G ON MFD.ID_GOOD = G.ID_GOOD WHERE G.TYPE = ? AND G.AMOUNT >= G.MINIMAL_AMOUNT;";
         List<Drug> drugs = AbstractQuery.query(sqlRequest, new DrugWithMinimalAmountRowMapper());
         return drugs;
     }
