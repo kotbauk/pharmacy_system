@@ -93,7 +93,7 @@ public class Helper {
         return AbstractQuery.query(sql, params, new GoodsOnWarehouseRowMapper());
     }
 
-    public static List<GoodsOnWarehouse> getMedicineInStockOrMinimum() throws SQLException {
+    /*public static List<GoodsOnWarehouse> getMedicineInStockOrMinimum() throws SQLException {
         String sql = "" +
                 "select m.ID           medicine_id,\n" +
                 "       m.NAME         medicine_name,\n" +
@@ -106,7 +106,7 @@ public class Helper {
                 "         join MEDICINE M on g.ID_MEDICINE = M.ID\n" +
                 "where MEDICINE_COUNT <= 10\n";
         return AbstractQuery.query(sql, new GoodsOnWarehouseRowMapper());
-    }
+    }*/
 
     public static List<Order> getBuyersByMedicineName(String name) throws SQLException {
         String sql = "" +
@@ -490,14 +490,13 @@ public class Helper {
 
     //6
     public static List<Drug> getAllDrugsWithMinimalAMountOrEmpted() throws SQLException {
-        String sqlRequest = "select * from\n" +
-                "(select DRUG_TYPE, ID_DRUG,NAME,PRICE_PER_UNIT,UNIT\n" +
-                "    from READY_DRUG rd where rd.ID_GOOD in\n" +
-                "        (select gow.ID_GOOD from GOODS_ON_WAREHOUSE gow where gow.AMOUNT<=gow.MINIMAL_AMOUNT))\n" +
-                "union\n" +
-                "(select DRUG_TYPE, ID_DRUG,NAME,PRICE_PER_UNIT,UNIT\n" +
-                "    from MANUFACTURED_DRUG md where md.ID_GOOD in\n" +
-                "        (select gow.ID_GOOD from GOODS_ON_WAREHOUSE gow where gow.AMOUNT<=gow.MINIMAL_AMOUNT))";
+        String sqlRequest = "select DRUG_TYPE, ID_DRUG,NAME,PRICE_PER_UNIT as pricePerUnit,UNIT\n" +
+                "        from READY_DRUG rd where rd.ID_GOOD in\n" +
+                "            (select gow.ID_GOOD from GOODS_ON_WAREHOUSE gow where gow.AMOUNT<=gow.MINIMAL_AMOUNT)\n" +
+                "    union\n" +
+                "    select DRUG_TYPE, ID_DRUG,NAME,PRICE_PER_UNIT,UNIT\n" +
+                "        from MANUFACTURED_DRUG md where md.ID_GOOD in\n" +
+                "            (select gow.ID_GOOD from GOODS_ON_WAREHOUSE gow where gow.AMOUNT<=gow.MINIMAL_AMOUNT)";
         List<Drug> drugs = AbstractQuery.query(sqlRequest, new DetailedDrugRowMapper());
         return drugs;
     }
@@ -521,12 +520,13 @@ public class Helper {
     //8
     public static List<Order> getOrdersInProduction() throws SQLException {
         String sqlRequest = "select\n" +
-                "o.id_orders, o.id_prescript, o.date_of_order, o.date_of_manufacturing, o.date_of_receive, o.price, o.status,\n" +
-                "t.id, t.role, t.surname, t.middlename, t.name,\n" +
-                "s.id, s.role, s.surname, s.middlename, s.name\n" +
+                "o.id_orders as order_id, o.date_of_order as order_date_of_order, o.date_of_manufacturing as order_date_of_manufacturing, " +
+                "o.date_of_receive as order_date_of_receive,  o.status as status, \n" +
+                "t.id as technologist_id, t.role as technologist_role, t.surname as technologist_surname, t.middlename as technologist_middlename, t.name as technologist_name,\n" +
+                "s.id as seller_id,  s.role as seller_role, s.surname as seller_surname, s.middlename as seller_middlename, s.name as seller_name\n" +
                 "    from \n" +
                 "         (select\n" +
-                "              o.id_orders, o.id_prescript, o.date_of_order, o.date_of_manufacturing, o.date_of_receive, o.price, o.status,\n" +
+                "              o.id_orders,  o.date_of_order, o.date_of_manufacturing, o.date_of_receive, o.status,\n" +
                 "              o.ID_TECHNOLOGIST,o.ID_SELLER\n" +
                 "          from ORDERS o where o.STATUS=('IN_PROGRESS')) o\n" +
                 "        join\n" +
@@ -534,7 +534,7 @@ public class Helper {
                 "        on t.ID=o.ID_TECHNOLOGIST\n" +
                 "        join\n" +
                 "            (select id, role, surname, middlename, name from USERS ) s\n" +
-                "         on s.ID=o.ID_SELLER;";
+                "         on s.ID=o.ID_SELLER";
         List<Order> orders = AbstractQuery.query(sqlRequest, new OrderRowMapper());
 
         return orders;

@@ -11,9 +11,9 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public class MedicineInStock extends Page {
-    protected MedicineInStock() {
-        super("Medicine in stock");
+public class DrugsOnEnoughAmount extends Page {
+    protected DrugsOnEnoughAmount() {
+        super("Drugs on enough amount");
         final Object[] columnHeader = new String[]{"Medicine", "Count"};
         final JTable drugTable = new JTable();
         final JButton backButton = new JButton("Back");
@@ -23,13 +23,9 @@ public class MedicineInStock extends Page {
         final JScrollPane pane = new JScrollPane(drugTable);
         final JButton okButton = new JButton("Ok");
 
-
-        typeComboBox.addItem(model.Type.OINTMENTS);
-        typeComboBox.addItem(model.Type.PILLS);
-        typeComboBox.addItem(model.Type.POWDERS);
-        typeComboBox.addItem(model.Type.SOLUTE);
-        typeComboBox.addItem(model.Type.POTIONS);
-        typeComboBox.addItem(model.Type.TINCTURES);
+        for(model.Type type: model.Type.values()){
+            typeComboBox.addItem(type);
+        }
 
         okButton.addActionListener(e -> {
             try {

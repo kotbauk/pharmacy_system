@@ -7,12 +7,12 @@ public class Order {
     private final UUID id;
     private final User seller;
     private final User technologist;
-    private final String status;
+    private final Status status;
     private final Instant dateOfOrder;
     private final Instant dateOfManufacturing;
     private final Instant dateOfReceive;
 
-    public Order(UUID id, User seller, User technologist, String status, Instant dateOfOrder, Instant dateOfManufacturing, Instant dateOfReceive) {
+    public Order(UUID id, User seller, User technologist, Status status, Instant dateOfOrder, Instant dateOfManufacturing, Instant dateOfReceive) {
         this.id = id;
         this.seller = seller;
         this.technologist = technologist;
@@ -37,6 +37,8 @@ public class Order {
     public Instant getDateOfOrder() {
         return dateOfOrder;
     }
+
+    public Status getStatus() {return status;}
 
     public Instant getDateOfManufacturing() {
         return dateOfManufacturing;

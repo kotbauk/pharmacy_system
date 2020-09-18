@@ -12,7 +12,7 @@ import java.util.List;
 public class OrdersInProduction extends Page {
     protected OrdersInProduction() {
         super("Orders in production");
-        final Object[] columnHeader = new String[]{"Order", "Seller", "Technologist", "Recipe", "Date of order"};
+        final Object[] columnHeader = new String[]{"Order", "Seller", "Technologist", "Status", "Date of order"};
         final JTable orderTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JLabel countLabel = new JLabel("Count");
@@ -23,7 +23,12 @@ public class OrdersInProduction extends Page {
             final List<Order> orderList = Helper.getOrdersInProduction();
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
-            //orderList.forEach(e -> model.addRow(new Object[]{e.getId(), e.getSeller(), e.getTechnologist(), e.getRecipe(), e.getDateOfOrder()}));
+            orderList.forEach(e -> model.addRow(new Object[]{
+                    e.getId(),
+                    e.getSeller(),
+                    e.getTechnologist(),
+                    e.getStatus(),
+                    e.getDateOfOrder()}));
             orderTable.setModel(model);
             countValueLabel.setText(String.valueOf(orderList.size()));
         } catch (SQLException e) {
