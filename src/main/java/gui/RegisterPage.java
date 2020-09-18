@@ -29,7 +29,7 @@ public class RegisterPage extends Page {
         roleComboBox.addItem(Role.HEAD_OF_PHARMACY);
         roleComboBox.addItem(Role.PHARMACIST_SELLER);
         roleComboBox.addItem(Role.PHARMACIST_TECHNOLOGIST);
-        roleComboBox.addItem(Role.DOCTOR);
+        //roleComboBox.addItem(Role.DOCTOR);
 
         okButton.addActionListener(e -> {
             try {

@@ -22,7 +22,7 @@ public class MedicineOnStockOrMinimum extends Page {
             final List<GoodsOnWarehouse> medicineList = Helper.getMedicineInStockOrMinimum();
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
-            medicineList.forEach(m -> model.addRow(new Object[]{m.getMedicine(), m.getMedicineCount()}));
+            //medicineList.forEach(m -> model.addRow(new Object[]{m.getMedicine(), m.getMedicineCount()}));
             medicineTable.setModel(model);
         } catch (SQLException ex) {
             ex.printStackTrace();

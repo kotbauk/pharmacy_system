@@ -40,7 +40,7 @@ public class MedicineInStock extends Page {
                         Integer.parseInt(rowCountTextField.getText()));
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
-                medicineList.forEach(m -> model.addRow(new Object[]{m.getMedicine(), m.getMedicineCount()}));
+               // medicineList.forEach(m -> model.addRow(new Object[]{m.getMedicine(), m.getMedicineCount()}));
                 medicineTable.setModel(model);
                 this.validateTree();
             } catch (SQLException ex) {

@@ -13,8 +13,6 @@ public class UserRowMapper implements RowMapper<User> {
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new User(UUID.fromString(rs.getString("id")),
                 HasId.getById(Role.class, rs.getString("role")),
-                rs.getString("login"),
-                rs.getString("password"),
                 rs.getString("surname"),
                 rs.getString("middlename"),
                 rs.getString("name"));

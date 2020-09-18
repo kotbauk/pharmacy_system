@@ -5,17 +5,13 @@ import java.util.UUID;
 public class User {
     private final UUID id;
     final private Role role;
-    final private String login;
-    final private String password;
     final private String surname;
     final private String middleName;
     final private String name;
 
-    public User(UUID id, Role role, String login, String password, String surname, String middleName, String name) {
+    public User(UUID id, Role role, String surname, String middleName, String name) {
         this.id = id;
         this.role = role;
-        this.login = login;
-        this.password = password;
         this.surname = surname;
         this.middleName = middleName;
         this.name = name;
@@ -27,14 +23,6 @@ public class User {
 
     public UUID getId() {
         return id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getSurname() {
