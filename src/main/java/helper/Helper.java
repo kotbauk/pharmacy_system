@@ -321,22 +321,21 @@ public class Helper {
 
     //1
     public static List<Buyer> getAllOverdueBuyers() throws SQLException {
-        String sqlRequest = "select b.ID, b.NAME b.SURNAME,b.MIDDLENAME, b.PHONE_NUMBER, b.ADDRESS,b.DATE_OF_BIRTH\n" +
-                "from BUYER b where b.ID in\n" +
-                "    (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_DRUG in\n" +
-                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where md.NAME=?)\n" +
-                "    and p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_ORDER between ? and ?) );";
+        String sqlRequest = "select b.ID as buyer_id, b.SURNAME as buyer_surname, b.MIDDLENAME as buyer_middle, b.NAME as buyer_name, " +
+                "b.PHONE_NUMBER as buyer_phone_number, b.ADDRESS as buyer_address, b.DATE_OF_BIRTH as buyer_date_of_birth " +
+                "from BUYER b where b.ID in " +
+                "(select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in " +
+                "(select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE))";
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, new DetailedBuyerRowMapper());
         return  buyers;
     }
 
     //1
-    public static List<Integer> getCountOfAllOverdueBuyers() throws SQLException {
+    public static Integer getCountOfAllOverdueBuyers() throws SQLException {
         String sqlRequest = "select count(*) as count_of_buyer from\n" +
                 "    (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where sysdate>DATE_OF_RECEIVE));";
-        List<Integer> countOfAwaitingBuyers = AbstractQuery.query(sqlRequest, new CountOfBuyerRowMapper());
+                "        (select o.ID_PRESCRIPT from ORDERS o where sysdate>DATE_OF_RECEIVE))";
+        Integer countOfAwaitingBuyers = AbstractQuery.query(sqlRequest, new CountOfBuyerRowMapper()).get(0);
         return countOfAwaitingBuyers;
     }
 
@@ -514,7 +513,8 @@ public class Helper {
     public static List<Drug> getDrugWithMinimalAmountByType(Type type) throws SQLException {
         String sqlRequest = "SELECT MFD.name, MFD.type from MANUFACTURED_DRUG MFD\n" +
                 "JOIN GOODS_ON_WAREHOUSE G ON MFD.ID_GOOD = G.ID_GOOD WHERE G.TYPE = ? AND G.AMOUNT >= G.MINIMAL_AMOUNT;";
-        List<Drug> drugs = AbstractQuery.query(sqlRequest, new DrugWithMinimalAmountRowMapper());
+        List<Object> params = Collections.singletonList(type);
+        List<Drug> drugs = AbstractQuery.query(sqlRequest, params, new DrugWithMinimalAmountRowMapper());
         return drugs;
     }
 
