@@ -321,11 +321,11 @@ public class Helper {
 
     //1
     public static List<Buyer> getAllOverdueBuyers() throws SQLException {
-        String sqlRequest = "select b.ID as buyer_id, b.SURNAME as buyer_surname, b.MIDDLENAME as buyer_middle, b.NAME as buyer_name, " +
+        String sqlRequest = "select b.ID as buyer_id, b.SURNAME as buyer_surname, b.MIDDLENAME as buyer_middlename, b.NAME as buyer_name, " +
                 "b.PHONE_NUMBER as buyer_phone_number, b.ADDRESS as buyer_address, b.DATE_OF_BIRTH as buyer_date_of_birth " +
                 "from BUYER b where b.ID in " +
                 "(select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in " +
-                "(select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE))";
+                "(select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE and o.status = ('DONE')))";
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, new DetailedBuyerRowMapper());
         return  buyers;
     }
@@ -334,7 +334,7 @@ public class Helper {
     public static Integer getCountOfAllOverdueBuyers() throws SQLException {
         String sqlRequest = "select count(*) as count_of_buyer from\n" +
                 "    (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where sysdate>DATE_OF_RECEIVE))";
+                "        (select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE AND o.status = ('DONE')))";
         Integer countOfAwaitingBuyers = AbstractQuery.query(sqlRequest, new CountOfBuyerRowMapper()).get(0);
         return countOfAwaitingBuyers;
     }

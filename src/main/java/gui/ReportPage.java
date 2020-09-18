@@ -15,7 +15,7 @@ public class ReportPage extends Page {
         final JButton backButton = new JButton("Back");
         final Container container = getContentPane();
 
-        buyerWithOverdueButton.addActionListener(e -> new GuiManager(new BuyerWithOverdue()).showPage());
+        buyerWithOverdueButton.addActionListener(e -> new GuiManager(new OverdueBuyers()).showPage());
         ordersInProductionButton.addActionListener(e -> new GuiManager(new OrdersInProduction()).showPage());
         medicineInStockButton.addActionListener(e -> new GuiManager(new MedicineInStock()).showPage());
         medicineInStockOrMinimumButton.addActionListener(e -> new GuiManager(new MedicineOnStockOrMinimum()).showPage());
