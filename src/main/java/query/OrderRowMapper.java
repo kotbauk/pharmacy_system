@@ -17,8 +17,8 @@ public class OrderRowMapper implements RowMapper<Order> {
                 new SellerRowMapper().mapRow(rs, rowNum),
                 new TechnologistRowMapper().mapRow(rs, rowNum),
                 HasId.getById(Status.class, rs.getString("status")),
-                (dateOfManufacturing = rs.getTimestamp("order_date_of_order")) == null ? null : dateOfManufacturing.toInstant(),
-                (dateOfReceive = rs.getTimestamp("order_date_of_manufacturing")) == null ? null : dateOfReceive.toInstant(),
-                rs.getTimestamp("order_date_of_receive").toInstant());
+                (dateOfManufacturing = rs.getTimestamp("order_date_of_order")) == null ? null : dateOfManufacturing,
+                (dateOfReceive = rs.getTimestamp("order_date_of_manufacturing")) == null ? null : dateOfReceive,
+                rs.getTimestamp("order_date_of_receive"));
     }
 }

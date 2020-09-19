@@ -59,14 +59,14 @@ abstract public class AbstractQuery {
                 statement.setString(i + 1, (String) param);
             } else if (param instanceof Integer) {
                 statement.setInt(i + 1, (Integer) param);
-            } else if (param instanceof Instant) {
-                statement.setTimestamp(i + 1, Timestamp.from((Instant) param));
+            } else if (param instanceof Timestamp) {
+                statement.setTimestamp(i + 1, (Timestamp) param);
             } else if (param instanceof Role) {
                 statement.setString(i + 1, ((Role) param).getId());
             }else if (param instanceof Type) {
                 statement.setString(i + 1, ((Type) param).getId());
             } else {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("Unsupported parameter type in preparedStatement");
             }
         }
         return statement;

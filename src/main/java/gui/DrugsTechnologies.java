@@ -1,7 +1,9 @@
+
 package gui;
 
 import helper.Helper;
 import model.Order;
+import model.Technologies;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,25 +11,26 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BuyersByMedicineFrequency extends Page {
-    protected BuyersByMedicineFrequency() {
-        super("Buyers by medicine");
-        final Object[] columnHeader = new String[]{"Buyer", "Medicine"};
+public class DrugsTechnologies extends Page {
+    protected DrugsTechnologies() {
+        super("Drugs technologies");
+        final Object[] columnHeader = new String[]{"Production time", "Production action"};
         final JRadioButton useName = new JRadioButton("Use name");
         final JRadioButton useCategory = new JRadioButton("Use category");
+        final JRadioButton useAll = new JRadioButton("All");
         final ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(useName);
         buttonGroup.add(useCategory);
+        buttonGroup.add(useAll);
 
         final JLabel nameLabel = new JLabel("Name");
         final JTextField nameTextField = new JTextField();
         final JLabel categoryLabel = new JLabel("Category");
         final JComboBox<model.Type> categoryCheckBox = new JComboBox<>();
-        final JTable orderTable = new JTable();
+        final JLabel allLabel = new JLabel("All in production");
+        final JTable technologiesTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countLabel = new JLabel("Count");
-        final JLabel countValueLabel = new JLabel();
-        final JScrollPane pane = new JScrollPane(orderTable);
+        final JScrollPane pane = new JScrollPane(technologiesTable);
         final JButton okButton = new JButton("Ok");
 
         categoryCheckBox.addItem(model.Type.TINCTURES);
@@ -38,16 +41,19 @@ public class BuyersByMedicineFrequency extends Page {
         categoryCheckBox.addItem(model.Type.OINTMENTS);
 
         okButton.addActionListener(e -> {
-
             try {
-                final List<Order> orderList = useName.isSelected() ?
-                        Helper.getBuyersByMedicineFreqName(nameTextField.getText()) :
-                        Helper.getBuyersByFreqCategory((model.Type) categoryCheckBox.getSelectedItem());
+                List<Technologies> technologiesList = null;
+                if (useName.isSelected()) {
+                    technologiesList = Helper.getAllTechnologiesForSpecificDrugName(nameTextField.getText());
+                } else if (useCategory.isSelected()) {
+                    technologiesList = Helper.getAllTechnologiesForSpecificDrugType((model.Type) categoryCheckBox.getSelectedItem());
+                } else if (useAll.isSelected()) {
+                    technologiesList = Helper.getAllTechnologiesForDrugInProduction();
+                }
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
-               // orderList.forEach(o -> model.addRow(new Object[]{o.getRecipe().getBuyer(), o.getRecipe().getMedicine()}));
-                orderTable.setModel(model);
-                countValueLabel.setText(String.valueOf(orderList.size()));
+                technologiesList.forEach(technologies -> model.addRow(new Object[]{technologies.getProductionTime(), technologies.getProductionAction()}));
+                technologiesTable.setModel(model);
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -62,13 +68,13 @@ public class BuyersByMedicineFrequency extends Page {
         final Container container = getContentPane();
         container.add(useName);
         container.add(useCategory);
+        container.add(useAll);
+        container.add(allLabel);
         container.add(nameLabel);
         container.add(nameTextField);
         container.add(categoryLabel);
         container.add(categoryCheckBox);
         container.add(pane);
-        container.add(countLabel);
-        container.add(countValueLabel);
         container.add(okButton);
         container.add(backButton);
     }

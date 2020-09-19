@@ -33,293 +33,6 @@ public class Helper {
     }
 
     //1
-    public static List<Buyer> getBuyersWithOverdue() throws SQLException {
-        String sql = "" +
-                "select b.ID,\n" +
-                "       b.SURNAME       surname,\n" +
-                "       b.MIDDLENAME    middlename,\n" +
-                "       b.NAME          name,\n" +
-                "       b.DATE_OF_BIRTH date_of_birth,\n" +
-                "       b.PHONE_NUMBER  phone_number,\n" +
-                "       b.ADDRESS       address\n" +
-                "from PRESCRIPTION r\n" +
-                "         join BUYER B on r.ID_BUYER = B.ID\n" +
-                "         join ORDERS O on r.ID = O.ID_RECIPE\n" +
-                "where o.DATE_OF_RECEIVE is null\n" +
-                "   or r.DATE_OF_DONE < o.DATE_OF_RECEIVE\n" +
-                "group by b.ID, b.SURNAME, b.MIDDLENAME, b.NAME, b.DATE_OF_BIRTH, b.PHONE_NUMBER, b.ADDRESS";
-        return AbstractQuery.query(sql, new BuyerRowMapper());
-    }
-
-    //13
-    public static List<GoodsOnWarehouse> getMedicineInStock(Type type, Integer rowCount) throws SQLException {
-
-        if (rowCount < 0) {
-            rowCount = 10;
-        }
-
-        String sql;
-        List<Object> params;
-        if (type != null) {
-            sql = "" +
-                    "select m.ID           medicine_id,\n" +
-                    "       m.NAME         medicine_name,\n" +
-                    "       m.TYPE         medicine_type,\n" +
-                    "       g.ID           warehouse_id,\n" +
-                    "       UNIT           warehouse_unit,\n" +
-                    "       PRICE_FOR_UNIT warehouse_price,\n" +
-                    "       MEDICINE_COUNT warehouse_medicine_count\n" +
-                    "from GOODS_ON_WAREHOUSE g\n" +
-                    "         join MEDICINE M on g.ID_MEDICINE = M.ID\n" +
-                    "where rownum <= ?\n" +
-                    "  and m.type = ?\n" +
-                    "order by g.MEDICINE_COUNT ";
-            params = Arrays.asList(rowCount, type);
-        } else {
-            sql = "" +
-                    "select m.ID           medicine_id,\n" +
-                    "       m.NAME         medicine_name,\n" +
-                    "       m.TYPE         medicine_type,\n" +
-                    "       g.ID           warehouse_id,\n" +
-                    "       UNIT           warehouse_unit,\n" +
-                    "       PRICE_FOR_UNIT warehouse_price,\n" +
-                    "       MEDICINE_COUNT warehouse_medicine_count\n" +
-                    "from GOODS_ON_WAREHOUSE g\n" +
-                    "         join MEDICINE M on g.ID_MEDICINE = M.ID\n" +
-                    "where rownum <= ?\n" +
-                    "order by g.MEDICINE_COUNT";
-            params = Collections.singletonList(rowCount);
-        }
-        return AbstractQuery.query(sql, params, new GoodsOnWarehouseRowMapper());
-    }
-
-    /*public static List<GoodsOnWarehouse> getMedicineInStockOrMinimum() throws SQLException {
-        String sql = "" +
-                "select m.ID           medicine_id,\n" +
-                "       m.NAME         medicine_name,\n" +
-                "       m.TYPE         medicine_type,\n" +
-                "       g.ID           warehouse_id,\n" +
-                "       UNIT           warehouse_unit,\n" +
-                "       PRICE_FOR_UNIT warehouse_price,\n" +
-                "       MEDICINE_COUNT warehouse_medicine_count\n" +
-                "from GOODS_ON_WAREHOUSE g\n" +
-                "         join MEDICINE M on g.ID_MEDICINE = M.ID\n" +
-                "where MEDICINE_COUNT <= 10\n";
-        return AbstractQuery.query(sql, new GoodsOnWarehouseRowMapper());
-    }*/
-
-    public static List<Order> getBuyersByMedicineName(String name) throws SQLException {
-        String sql = "" +
-                "select r.ID                    recipe_id,\n" +
-                "       r.DIAGNOSIS             recipe_diagnosis,\n" +
-                "       r.DATE_OF_DONE          recipe_date_of_done,\n" +
-                "       m.NAME                  medicine_name,\n" +
-                "       m.ID                    medicine_id,\n" +
-                "       m.TYPE                  medicine_type,\n" +
-                "       b.ID                    buyer_id,\n" +
-                "       b.SURNAME               buyer_surname,\n" +
-                "       b.MIDDLENAME            buyer_middlename,\n" +
-                "       b.NAME                  buyer_name,\n" +
-                "       b.DATE_OF_BIRTH         buyer_date_of_birth,\n" +
-                "       b.PHONE_NUMBER          buyer_phone_number,\n" +
-                "       b.ADDRESS               buyer_address,\n" +
-                "       u.ID                    seller_id,\n" +
-                "       u.ROLE                  seller_role,\n" +
-                "       u.LOGIN                 seller_login,\n" +
-                "       u.PASSWORD              seller_password,\n" +
-                "       u.SURNAME               seller_surname,\n" +
-                "       u.MIDDLENAME            seller_middlename,\n" +
-                "       u.NAME                  seller_name,\n" +
-                "       u2.ID                   technologist_id,\n" +
-                "       U2.ROLE                 technologist_role,\n" +
-                "       U2.LOGIN                technologist_login,\n" +
-                "       U2.PASSWORD             technologist_password,\n" +
-                "       U2.SURNAME              technologist_surname,\n" +
-                "       U2.MIDDLENAME           technologist_middlename,\n" +
-                "       U2.NAME                 technologist_name,\n" +
-                "       U3.ID                   doctor_id,\n" +
-                "       U3.ROLE                 doctor_role,\n" +
-                "       U3.LOGIN                doctor_login,\n" +
-                "       U3.PASSWORD             doctor_password,\n" +
-                "       U3.SURNAME              doctor_surname,\n" +
-                "       U3.MIDDLENAME           doctor_middlename,\n" +
-                "       U3.NAME                 doctor_name,\n" +
-                "       o.ID                    order_id,\n" +
-                "       o.DATE_OF_ORDER         order_date_of_order,\n" +
-                "       o.DATE_OF_MANUFACTURING order_date_of_manufacturing,\n" +
-                "       o.DATE_OF_RECEIVE       order_date_of_receive\n" +
-                "from ORDERS o\n" +
-                "         join RECIPE R on o.ID_RECIPE = R.ID\n" +
-                "         join BUYER B on R.ID_BUYER = B.ID\n" +
-                "         join USERS U on o.ID_SELLER = U.ID\n" +
-                "         join USERS U2 on o.ID_TECHNOLOGIST = U2.ID\n" +
-                "         join USERS U3 on U3.ID = r.ID_DOCTOR\n" +
-                "         join MEDICINE M on R.ID_MEDICINE = M.ID\n" +
-                "where m.NAME = ?";
-        final List<Object> params = Collections.singletonList(name);
-        return AbstractQuery.query(sql, params, new OrderRowMapper());
-    }
-
-    public static List<Order> getBuyersByCategory(Type type) throws SQLException {
-        String sql = "" +
-                "select r.ID                    recipe_id,\n" +
-                "       r.DIAGNOSIS             recipe_diagnosis,\n" +
-                "       r.DATE_OF_DONE          recipe_date_of_done,\n" +
-                "       m.NAME                  medicine_name,\n" +
-                "       m.ID                    medicine_id,\n" +
-                "       m.TYPE                  medicine_type,\n" +
-                "       b.ID                    buyer_id,\n" +
-                "       b.SURNAME               buyer_surname,\n" +
-                "       b.MIDDLENAME            buyer_middlename,\n" +
-                "       b.NAME                  buyer_name,\n" +
-                "       b.DATE_OF_BIRTH         buyer_date_of_birth,\n" +
-                "       b.PHONE_NUMBER          buyer_phone_number,\n" +
-                "       b.ADDRESS               buyer_address,\n" +
-                "       u.ID                    seller_id,\n" +
-                "       u.ROLE                  seller_role,\n" +
-                "       u.LOGIN                 seller_login,\n" +
-                "       u.PASSWORD              seller_password,\n" +
-                "       u.SURNAME               seller_surname,\n" +
-                "       u.MIDDLENAME            seller_middlename,\n" +
-                "       u.NAME                  seller_name,\n" +
-                "       u2.ID                   technologist_id,\n" +
-                "       U2.ROLE                 technologist_role,\n" +
-                "       U2.LOGIN                technologist_login,\n" +
-                "       U2.PASSWORD             technologist_password,\n" +
-                "       U2.SURNAME              technologist_surname,\n" +
-                "       U2.MIDDLENAME           technologist_middlename,\n" +
-                "       U2.NAME                 technologist_name,\n" +
-                "       U3.ID                   doctor_id,\n" +
-                "       U3.ROLE                 doctor_role,\n" +
-                "       U3.LOGIN                doctor_login,\n" +
-                "       U3.PASSWORD             doctor_password,\n" +
-                "       U3.SURNAME              doctor_surname,\n" +
-                "       U3.MIDDLENAME           doctor_middlename,\n" +
-                "       U3.NAME                 doctor_name,\n" +
-                "       o.ID                    order_id,\n" +
-                "       o.DATE_OF_ORDER         order_date_of_order,\n" +
-                "       o.DATE_OF_MANUFACTURING order_date_of_manufacturing,\n" +
-                "       o.DATE_OF_RECEIVE       order_date_of_receive\n" +
-                "from ORDERS o\n" +
-                "         join RECIPE R on o.ID_RECIPE = R.ID\n" +
-                "         join BUYER B on R.ID_BUYER = B.ID\n" +
-                "         join USERS U on o.ID_SELLER = U.ID\n" +
-                "         join USERS U2 on o.ID_TECHNOLOGIST = U2.ID\n" +
-                "         join USERS U3 on U3.ID = r.ID_DOCTOR\n" +
-                "         join MEDICINE M on R.ID_MEDICINE = M.ID\n" +
-                "where m.type = ?";
-        final List<Object> params = Collections.singletonList(type);
-        return AbstractQuery.query(sql, params, new OrderRowMapper());
-    }
-
-    public static List<Order> getBuyersByMedicineFreqName(String name) throws SQLException {
-        String sql = "" +
-                "select r.ID                    recipe_id,\n" +
-                "       r.DIAGNOSIS             recipe_diagnosis,\n" +
-                "       r.DATE_OF_DONE          recipe_date_of_done,\n" +
-                "       m.NAME                  medicine_name,\n" +
-                "       m.ID                    medicine_id,\n" +
-                "       m.TYPE                  medicine_type,\n" +
-                "       b.ID                    buyer_id,\n" +
-                "       b.SURNAME               buyer_surname,\n" +
-                "       b.MIDDLENAME            buyer_middlename,\n" +
-                "       b.NAME                  buyer_name,\n" +
-                "       b.DATE_OF_BIRTH         buyer_date_of_birth,\n" +
-                "       b.PHONE_NUMBER          buyer_phone_number,\n" +
-                "       b.ADDRESS               buyer_address,\n" +
-                "       u.ID                    seller_id,\n" +
-                "       u.ROLE                  seller_role,\n" +
-                "       u.LOGIN                 seller_login,\n" +
-                "       u.PASSWORD              seller_password,\n" +
-                "       u.SURNAME               seller_surname,\n" +
-                "       u.MIDDLENAME            seller_middlename,\n" +
-                "       u.NAME                  seller_name,\n" +
-                "       u2.ID                   technologist_id,\n" +
-                "       U2.ROLE                 technologist_role,\n" +
-                "       U2.LOGIN                technologist_login,\n" +
-                "       U2.PASSWORD             technologist_password,\n" +
-                "       U2.SURNAME              technologist_surname,\n" +
-                "       U2.MIDDLENAME           technologist_middlename,\n" +
-                "       U2.NAME                 technologist_name,\n" +
-                "       U3.ID                   doctor_id,\n" +
-                "       U3.ROLE                 doctor_role,\n" +
-                "       U3.LOGIN                doctor_login,\n" +
-                "       U3.PASSWORD             doctor_password,\n" +
-                "       U3.SURNAME              doctor_surname,\n" +
-                "       U3.MIDDLENAME           doctor_middlename,\n" +
-                "       U3.NAME                 doctor_name,\n" +
-                "       o.ID                    order_id,\n" +
-                "       o.DATE_OF_ORDER         order_date_of_order,\n" +
-                "       o.DATE_OF_MANUFACTURING order_date_of_manufacturing,\n" +
-                "       o.DATE_OF_RECEIVE       order_date_of_receive\n" +
-                "from ORDERS o\n" +
-                "         join RECIPE R on o.ID_RECIPE = R.ID\n" +
-                "         join BUYER B on R.ID_BUYER = B.ID\n" +
-                "         join USERS U on o.ID_SELLER = U.ID\n" +
-                "         join USERS U2 on o.ID_TECHNOLOGIST = U2.ID\n" +
-                "         join USERS U3 on U3.ID = r.ID_DOCTOR\n" +
-                "         join MEDICINE M on R.ID_MEDICINE = M.ID\n" +
-                "where m.NAME = ?\n" +
-                "order by count(u.ID) desc";
-        List<Object> params = Collections.singletonList(name);
-        return AbstractQuery.query(sql, params, new OrderRowMapper());
-    }
-
-    //TODO 12
-    public static List<Order> getBuyersByFreqCategory(Type type) throws SQLException {
-        String sql = "" +
-                "select r.ID                    recipe_id,\n" +
-                "       r.DIAGNOSIS             recipe_diagnosis,\n" +
-                "       r.DATE_OF_DONE          recipe_date_of_done,\n" +
-                "       m.NAME                  medicine_name,\n" +
-                "       m.ID                    medicine_id,\n" +
-                "       m.TYPE                  medicine_type,\n" +
-                "       b.ID                    buyer_id,\n" +
-                "       b.SURNAME               buyer_surname,\n" +
-                "       b.MIDDLENAME            buyer_middlename,\n" +
-                "       b.NAME                  buyer_name,\n" +
-                "       b.DATE_OF_BIRTH         buyer_date_of_birth,\n" +
-                "       b.PHONE_NUMBER          buyer_phone_number,\n" +
-                "       b.ADDRESS               buyer_address,\n" +
-                "       u.ID                    seller_id,\n" +
-                "       u.ROLE                  seller_role,\n" +
-                "       u.LOGIN                 seller_login,\n" +
-                "       u.PASSWORD              seller_password,\n" +
-                "       u.SURNAME               seller_surname,\n" +
-                "       u.MIDDLENAME            seller_middlename,\n" +
-                "       u.NAME                  seller_name,\n" +
-                "       u2.ID                   technologist_id,\n" +
-                "       U2.ROLE                 technologist_role,\n" +
-                "       U2.LOGIN                technologist_login,\n" +
-                "       U2.PASSWORD             technologist_password,\n" +
-                "       U2.SURNAME              technologist_surname,\n" +
-                "       U2.MIDDLENAME           technologist_middlename,\n" +
-                "       U2.NAME                 technologist_name,\n" +
-                "       U3.ID                   doctor_id,\n" +
-                "       U3.ROLE                 doctor_role,\n" +
-                "       U3.LOGIN                doctor_login,\n" +
-                "       U3.PASSWORD             doctor_password,\n" +
-                "       U3.SURNAME              doctor_surname,\n" +
-                "       U3.MIDDLENAME           doctor_middlename,\n" +
-                "       U3.NAME                 doctor_name,\n" +
-                "       o.ID                    order_id,\n" +
-                "       o.DATE_OF_ORDER         order_date_of_order,\n" +
-                "       o.DATE_OF_MANUFACTURING order_date_of_manufacturing,\n" +
-                "       o.DATE_OF_RECEIVE       order_date_of_receive\n" +
-                "from ORDERS o\n" +
-                "         join RECIPE R on o.ID_RECIPE = R.ID\n" +
-                "         join BUYER B on R.ID_BUYER = B.ID\n" +
-                "         join USERS U on o.ID_SELLER = U.ID\n" +
-                "         join USERS U2 on o.ID_TECHNOLOGIST = U2.ID\n" +
-                "         join USERS U3 on U3.ID = r.ID_DOCTOR\n" +
-                "         join MEDICINE M on R.ID_MEDICINE = M.ID\n" +
-                "where m.type = ?\n" +
-                "order by count(u.ID) desc";
-        List<Object> params = Collections.singletonList(type);
-        return AbstractQuery.query(sql, params, new OrderRowMapper());
-    }
-
-    //1
     public static List<Buyer> getAllOverdueBuyers() throws SQLException {
         String sqlRequest = "select b.ID as buyer_id, b.SURNAME as buyer_surname, b.MIDDLENAME as buyer_middlename, b.NAME as buyer_name, " +
                 "b.PHONE_NUMBER as buyer_phone_number, b.ADDRESS as buyer_address, b.DATE_OF_BIRTH as buyer_date_of_birth " +
@@ -327,16 +40,7 @@ public class Helper {
                 "(select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in " +
                 "(select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE and o.status = ('DONE')))";
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, new DetailedBuyerRowMapper());
-        return  buyers;
-    }
-
-    //1
-    public static Integer getCountOfAllOverdueBuyers() throws SQLException {
-        String sqlRequest = "select count(*) as count_of_buyer from\n" +
-                "    (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE AND o.status = ('DONE')))";
-        Integer countOfAwaitingBuyers = AbstractQuery.query(sqlRequest, new CountOfBuyerRowMapper()).get(0);
-        return countOfAwaitingBuyers;
+        return buyers;
     }
 
     //2
@@ -349,15 +53,6 @@ public class Helper {
         return buyers;
     }
 
-    //2
-    public static List<Integer> getCountOfAwaitingBuyerByDrugName(String nameDrug ) throws SQLException {
-        String sqlRequest = "select count() as count_of_buyer from\n" +
-                "(select pr.ID_BUYER from PRESCRIPTIONS pr where pr.ID_PRESCRIPT in\n" +
-                "(select o.ID_PRESCRIPT from ORDERS o where o.STATUS=('AWATING')))";
-        List<Object> params = Collections.singletonList(nameDrug);
-        List<Integer> countOfAwaitingBuyers = AbstractQuery.query(sqlRequest, params, new CountOfBuyerRowMapper());
-        return countOfAwaitingBuyers;
-    }
 
     //2
     public static List<Buyer> getAwaitingBuyerByDrugType(Type type) throws SQLException {
@@ -372,66 +67,54 @@ public class Helper {
         return buyers;
     }
 
-    //2
-    public static List<Integer> getCountOfAwaitingBuyerByDrugType(Type type) throws SQLException {
-        String sqlRequest = "select count() as count_of_buyer from\n" +
-                "(select pr.ID_BUYER from PRESCRIPTIONS pr where pr.ID_DRUG in\n" +
-                "    (select md.ID_DRUG from MANUFACTURED_DRUG md where DRUG_TYPE=?)\n" +
-                "and pr.ID_PRESCRIPT in\n" +
-                "    (select o.ID_PRESCRIPT from ORDERS o where o.STATUS=('AWATING)))";
-        List<Object> params = Collections.singletonList(type);
-        List<Integer> countOfAwaitingBuyers = AbstractQuery.query(sqlRequest, params, new CountOfBuyerRowMapper());
-        return countOfAwaitingBuyers;
-    }
 
     //3
-    public static List<Drug> getMostUsedSubstances() {
+    public static List<DrugsWithAmountResults> getMostUsedDrugs() throws SQLException {
+        String requestManufacturedDrugs = "select  D.ID_DRUG as drug_id, D.name, D.DRUG_TYPE as drug_type," +
+                "D.PRICE_PER_UNIT as pricePerUnit, D.UNIT as unit, COUNT(S.ID_GOOD) as amount FROM" +
+                "(SELECT * FROM MANUFACTURED_DRUG MD\n" +
+                "UNION ALL\n" +
+                "SELECT * FROM READY_DRUG RD) D\n" +
+                "JOIN GOODS_ON_WAREHOUSE GOW on D.ID_GOOD = GOW.ID_GOOD\n" +
+                "JOIN  SALES S on GOW.ID_GOOD = S.ID_GOOD WHERE ROWNUM = 10 " +
+                "GROUP BY  D.ID_DRUG, D.name, D.DRUG_TYPE, D.PRICE_PER_UNIT, D.UNIT ORDER BY COUNT(S.ID_GOOD) DESC";
 
-        String requestManufacturedDrugs = "" +
-                "select d.name FROM MANUFACTURED_DRUG d" +
-                "    JOIN GOODS_ON_WAREHOUSE GOW on d.ID_GOOD = GOW.ID_GOOD" +
-                "    JOIN  SALES S on GOW.ID_GOOD = S.ID_GOOD WHERE ROWNUM = 10 GROUP BY d.name ORDER BY COUNT(S.ID_GOOD) DESC";
-
-        List<Drug> drugsList = null;
-        try {
-            drugsList.addAll(AbstractQuery.query(requestManufacturedDrugs, new ManufacturedDrugRowMapper()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<DrugsWithAmountResults> drugsList = AbstractQuery.query(requestManufacturedDrugs, new DrugsWithAmountRowMapper());
         return drugsList;
 
     }
 
     //3
-    public static List<Drug> getMostUsedSubstancesByType(Type type) throws SQLException {
+    public static List<DrugsWithAmountResults> getMostUsedDrugByType(Type type) throws SQLException {
+        String sqlRequest = "select  D.ID_DRUG as drug_id, D.name, D.DRUG_TYPE as drug_type," +
+                "D.PRICE_PER_UNIT as pricePerUnit, D.UNIT as unit, COUNT(S.ID_GOOD) as amount FROM" +
+                "(SELECT * FROM MANUFACTURED_DRUG MD\n" +
+                "UNION ALL\n" +
+                "SELECT * FROM READY_DRUG RD) D\n" +
+                "JOIN GOODS_ON_WAREHOUSE GOW on D.ID_GOOD = GOW.ID_GOOD\n" +
+                "JOIN  SALES S on GOW.ID_GOOD = S.ID_GOOD WHERE ROWNUM = 10 AND drug_type = ? " +
+                "GROUP BY  D.ID_DRUG, D.name, D.DRUG_TYPE, D.PRICE_PER_UNIT, D.UNIT ORDER BY COUNT(S.ID_GOOD) DESC";
 
-        String requestManufacturedDrugs = "" +
-                "select d.name FROM MANUFACTURED_DRUG d" +
-                "    JOIN GOODS_ON_WAREHOUSE GOW on d.ID_GOOD = GOW.ID_GOOD" +
-                "    JOIN  SALES S on GOW.ID_GOOD = S.ID_GOOD WHERE d.type = ? WHERE ROWNUM = 10 GROUP BY d.name ORDER BY COUNT(S.ID_GOOD) DESC";
 
         List<Object> params = Collections.singletonList(type);
-        List<Drug> drugsList = AbstractQuery.query(requestManufacturedDrugs, params, new DetailedDrugRowMapper());
-
+        List<DrugsWithAmountResults> drugsList = AbstractQuery.query(sqlRequest, params, new DrugsWithAmountRowMapper());
         return drugsList;
 
     }
 
     //4
-    public static List<VolumeOfSubstanceResult> getVolumeOfSubstance(String name, Timestamp beginDate, Timestamp endDate) throws SQLException {
+    public static VolumeOfSubstanceResult getVolumeOfSubstance(String name, Timestamp beginDate, Timestamp endDate) throws SQLException {
 
-        String sqlRequest = "" +
-                "select sum(c.AMOUNT) AS volume from COMPOSITION c where c.ID_DRUG in" +
-                "(select p.ID_DRUG from PRESCRIPTIONS p where p.ID_PRESCRIPT in" +
-                "(select  o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_MANUFACTURING  between =? and =?))" +
-                "and c.ID_COMPONENT in" +
-                "    (select com.ID_COMPONENT from COMPONENTS com)";
-        List<Object> params = Arrays.asList(beginDate, endDate);
+        String sqlRequest = "select sum(c.AMOUNT) AS volume from COMPOSITION c where c.ID_DRUG in\n" +
+                "(select p.ID_DRUG from PRESCRIPTIONS p where p.ID_PRESCRIPT in\n" +
+                "(select  o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_MANUFACTURING >= ? and o.DATE_OF_MANUFACTURING <= ? ))\n" +
+                "and c.ID_COMPONENT in (select com.ID_COMPONENT from COMPONENTS com WHERE com.NAME = ?)";
+        List<Object> params = Arrays.asList(name, beginDate, endDate);
 
         List<VolumeOfSubstanceResult> volumeOfSubstanceResult =
                 AbstractQuery.query(sqlRequest, params, new VolumeOfSubstanceResultsRowMapper());
 
-        return volumeOfSubstanceResult;
+        return volumeOfSubstanceResult.get(0);
     }
 
     //5
@@ -439,52 +122,30 @@ public class Helper {
         String sqlRequest = "select b.ID,b.SURNAME,b.MIDDLENAME,b.PHONE_NUMBER, b.ADDRESS,b.DATE_OF_BIRTH\n" +
                 "from BUYER b where b.ID in\n" +
                 "    (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_DRUG in\n" +
-                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where md.NAME=?)\n" +
+                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where md.NAME = ?)\n" +
                 "    and p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_ORDER between ? and ?) )";
+                "        (select o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_ORDER >= ? and o.DATE_OF_ORDER <= ?) )";
         List<Object> params = Arrays.asList(drugName, beginDate, endDate);
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, params, new DetailedBuyerRowMapper());
         return buyers;
 
     }
-    //5
-    public static List<Integer> getCountOfBuyersOrderedSpecificDrugInPeriod(String drugName, Timestamp beginDate, Timestamp endDate) throws SQLException{
-        String sqlRequest = "select count() as count_of_b\n" +
-                "from (select p.ID_BUYER from PRESCRIPTIONS p\n" +
-                "    where p.ID_DRUG in\n" +
-                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where md.NAME=?)\n" +
-                "    and p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_ORDER between ? and ?))";
-        List<Object> params = Arrays.asList(drugName, beginDate, endDate);
-        List<Integer> countOfBuyers = AbstractQuery.query(sqlRequest, params, new CountOfBuyerRowMapper());
-        return countOfBuyers;
-    }
+
 
     //5
-    public static List<Buyer> getBuyersOrderedSpecificDrugTypeInPeriod(String drugName, Timestamp beginDate, Timestamp endDate) throws SQLException {
+    public static List<Buyer> getBuyersOrderedSpecificDrugTypeInPeriod(Type type, Timestamp beginDate, Timestamp endDate) throws SQLException {
         String sqlRequest = "select b.ID,b.SURNAME,b.MIDDLENAME,b.PHONE_NUMBER, b.ADDRESS,b.DATE_OF_BIRTH\n" +
                 "from BUYER b where b.ID in\n" +
                 "    (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_DRUG in\n" +
                 "        (select md.ID_DRUG from MANUFACTURED_DRUG md where md.NAME=?)\n" +
                 "    and p.ID_PRESCRIPT in\n" +
                 "        (select o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_ORDER between ? and ?) )";
-        List<Object> params = Arrays.asList(drugName, beginDate, endDate);
+        List<Object> params = Arrays.asList(type, beginDate, endDate);
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, params, new DetailedBuyerRowMapper());
         return buyers;
 
     }
-    //5
-    public static List<Integer> getCountOfBuyersOrderedSpecificTypeDrugInPeriod(String drugName, Timestamp beginDate, Timestamp endDate) throws SQLException{
-        String sqlRequest = "select count() as count_of_b\n" +
-                "from (select p.ID_BUYER from PRESCRIPTIONS p\n" +
-                "    where p.ID_DRUG in\n" +
-                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where md.NAME=?)\n" +
-                "    and p.ID_PRESCRIPT in\n" +
-                "        (select o.ID_PRESCRIPT from ORDERS o where o.DATE_OF_ORDER between ? and ?))";
-        List<Object> params = Arrays.asList(drugName, beginDate, endDate);
-        List<Integer> countOfBuyers = AbstractQuery.query(sqlRequest, params, new CountOfBuyerRowMapper());
-        return countOfBuyers;
-    }
+
 
     //6
     public static List<Drug> getAllDrugsWithMinimalAMountOrEmpted() throws SQLException {
@@ -540,7 +201,7 @@ public class Helper {
     }
 
     //9
-    public static List<Component> getComponentsNeededForOrder() throws SQLException {
+    public static List<Component> getComponentsNeededForOrders() throws SQLException {
         String sqlRequest = "" +
                 "select com.name as name, com.type as type, com.ID_COMPONENT as id, com.UNIT as unit, com.PRICE_PER_UNIT as price\n" +
                 "from components com\n" +
@@ -551,7 +212,7 @@ public class Helper {
                 "      (select p.id_drug\n" +
                 "       from prescriptions p\n" +
                 "       where p.id_prescript in\n" +
-                "             (select o.id_prescript from orders o where sysdate <= date_of_manufacturing)));";
+                "             (select o.id_prescript from orders o where sysdate <= date_of_manufacturing)))";
 
         List<Component> components = AbstractQuery.query(sqlRequest, new ComponentRowMapper());
 
@@ -568,15 +229,15 @@ public class Helper {
                 "      (select p.id_drug\n" +
                 "       from prescriptions p\n" +
                 "       where p.id_prescript in\n" +
-                "             (select o.id_prescript from orders o where sysdate <= date_of_manufacturing)));\n";
+                "             (select o.id_prescript from orders o where sysdate <= date_of_manufacturing)))\n";
         return AbstractQuery.query(sqlRequest, new AmountOfAllComponentsNeededForOrderRowMapper());
     }
 
     //10
     public static List<Technologies> getAllTechnologiesForSpecificDrugType(Type type) throws SQLException {
-        String sqlRequest = "select t.PRODUCTION_ACTION as action, t.PRODUCTION_TIME as production_time, t.it.ID_TECHNOLOGY as id from TECHNOLOGIES t" +
+        String sqlRequest = "select t.PRODUCTION_ACTION as action, t.PRODUCTION_TIME as production_time, t.ID_TECHNOLOGY as id from TECHNOLOGIES t " +
                 "where t.ID_DRUG in\n" +
-                "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.DRUG_TYPE=?);";
+                "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.DRUG_TYPE=?)";
 
         List<Object> params = Collections.singletonList(type);
         List<Technologies> technologies = AbstractQuery.query(sqlRequest, params, new TechnologiesRowMapper());
@@ -586,7 +247,7 @@ public class Helper {
     //10
     public static List<Technologies> getAllTechnologiesForSpecificDrugName(String name) throws SQLException {
         String sqlRequest = "select t.PRODUCTION_ACTION, t.PRODUCTION_TIME,t.ID_TECHNOLOGY from TECHNOLOGIES t where t.ID_DRUG in\n" +
-                "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.name =? );";
+                "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.name =? )";
 
         List<Object> params = Collections.singletonList(name);
         List<Technologies> technologies = AbstractQuery.query(sqlRequest, params, new TechnologiesRowMapper());
@@ -609,10 +270,25 @@ public class Helper {
     }
 
     //11
-    public static List<InfoAboutDrugWithItsComponents> getInfoAboutDrugsWithItsComponents(String drugName) {
-        String sqlRequest = "";
+    public static List<InfoAboutDrugWithItsComponents> getInfoAboutDrugsWithItsComponents(String drugName) throws SQLException {
+        String sqlRequest = "SELECT COMPONENTS.NAME, COMPONENTS.PRICE_PER_UNIT*CMPSTN.AMOUNT as component_price, CMPSTN.AMOUNT as amount FROM COMPONENTS\n" +
+                "    JOIN (SELECT CMPSTN.ID_COMPONENT, CMPSTN.AMOUNT FROM COMPOSITION CMPSTN WHERE ID_DRUG IN\n" +
+                "                    (SELECT MND.ID_DRUG FROM MANUFACTURED_DRUG MND WHERE MND.NAME = ?))" +
+                "CMPSTN ON CMPSTN.ID_COMPONENT = COMPONENTS.ID_COMPONENT";
 
-        return null;
+        List<Object> params = Collections.singletonList(drugName);
+        List<InfoAboutDrugWithItsComponents> infoAboutDrugWithItsComponents = AbstractQuery.query(sqlRequest, params,
+                new InfoAboutDrugWithItsComponentsRowMapper());
+
+        return infoAboutDrugWithItsComponents;
+    }
+
+    //11
+    public static Double getPriceOfSpecificDrug(String drugName) throws SQLException {
+        String sqlRequest = " SELECT MND.PRICE_PER_UNIT as price FROM MANUFACTURED_DRUG MND WHERE MND.NAME = ?";
+        List<Object> params = Collections.singletonList(drugName);
+        List<Double> price = AbstractQuery.query(sqlRequest, params, new DrugPriceRowMapper());
+        return price.get(0);
     }
 
     //12
@@ -623,7 +299,8 @@ public class Helper {
                 "(select p.ID_BUYER from PRESCRIPTIONS p where p.ID_DRUG in\n" +
                 "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.DRUG_TYPE =?))\n" +
                 "and ROWNUM=10\n" +
-                "order by count(b.id) desc;";
+                "group by b.ID, b.SURNAME, b.MIDDLENAME, b.NAME, b.DATE_OF_BIRTH, b.PHONE_NUMBER, b.ADDRESS " +
+                "order by count(b.id) desc";
 
         List<Object> params = Collections.singletonList(type);
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, params, new BuyerRowMapper());
@@ -639,6 +316,7 @@ public class Helper {
                 "   (select p.ID_BUYER from PRESCRIPTIONS p where p.ID_DRUG in\n" +
                 "       (select md.ID_DRUG from MANUFACTURED_DRUG md where md.name =?))\n" +
                 "    and ROWNUM=10\n" +
+                "group by b.ID, b.SURNAME, b.MIDDLENAME, b.NAME, b.DATE_OF_BIRTH, b.PHONE_NUMBER, b.ADDRESS " +
                 "order by count(b.id) desc";
 
         List<Object> params = Collections.singletonList(drugName);
@@ -655,12 +333,13 @@ public class Helper {
         List<InfoAboutDrug> infoAboutDrugs = AbstractQuery.query(sqlRequest, params, new InfoAboutDrugRowMapper());
         return infoAboutDrugs;
     }
+
     //13
     public static List<Component> getAllComponentsByDrugName(String drugName) throws SQLException {
         String sqlRequest = "SELECT C.ID_COMPONENT, C.NAME as name, C.PRICE_PER_UNIT as price, C.UNIT as unit, C.TYPE as type FROM COMPONENTS C\n" +
                 "    WHERE ID_COMPONENT IN \n" +
                 "          (SELECT CMPST.ID_COMPONENT FROM COMPOSITION CMPST WHERE CMPST.ID_DRUG IN\n" +
-                "                (SELECT MAN_DRUG.ID_DRUG FROM MANUFACTURED_DRUG MAN_DRUG WHERE MAN_DRUG.NAME =?));";
+                "                (SELECT MAN_DRUG.ID_DRUG FROM MANUFACTURED_DRUG MAN_DRUG WHERE MAN_DRUG.NAME =?))";
 
         List<Object> params = Collections.singletonList(drugName);
         List<Component> components = AbstractQuery.query(sqlRequest, params, new ComponentRowMapper());

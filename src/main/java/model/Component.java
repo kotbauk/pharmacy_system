@@ -18,4 +18,19 @@ public class Component {
         this.pricePerUnit = pricePerUnit;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public int getPricePerUnit() {
+        return pricePerUnit;
+    }
 }

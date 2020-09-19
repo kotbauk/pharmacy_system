@@ -13,4 +13,8 @@ public class VolumeOfSubstanceResult {
     }
 
 
+    @Override
+    public String toString() {
+        return String.valueOf(volume);
+    }
 }

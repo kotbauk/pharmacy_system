@@ -17,7 +17,7 @@ public class DrugOnCriticalAmountOrEnded extends Page {
                 "Medicine",
                 "DRUG_TYPE",
                 "UNIT",
-                "PRICE_PER_UNIT",};
+                "PRICE_PER_UNIT"};
         final JTable medicineTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JScrollPane pane = new JScrollPane(medicineTable);

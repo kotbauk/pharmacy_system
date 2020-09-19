@@ -1,6 +1,6 @@
 package model;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class Order {
@@ -8,11 +8,11 @@ public class Order {
     private final User seller;
     private final User technologist;
     private final Status status;
-    private final Instant dateOfOrder;
-    private final Instant dateOfManufacturing;
-    private final Instant dateOfReceive;
+    private final Timestamp dateOfOrder;
+    private final Timestamp dateOfManufacturing;
+    private final Timestamp dateOfReceive;
 
-    public Order(UUID id, User seller, User technologist, Status status, Instant dateOfOrder, Instant dateOfManufacturing, Instant dateOfReceive) {
+    public Order(UUID id, User seller, User technologist, Status status, Timestamp dateOfOrder, Timestamp dateOfManufacturing, Timestamp dateOfReceive) {
         this.id = id;
         this.seller = seller;
         this.technologist = technologist;
@@ -34,17 +34,17 @@ public class Order {
         return technologist;
     }
 
-    public Instant getDateOfOrder() {
+    public Timestamp getDateOfOrder() {
         return dateOfOrder;
     }
 
     public Status getStatus() {return status;}
 
-    public Instant getDateOfManufacturing() {
+    public Timestamp getDateOfManufacturing() {
         return dateOfManufacturing;
     }
 
-    public Instant getDateOfReceive() {
+    public Timestamp getDateOfReceive() {
         return dateOfReceive;
     }
 }

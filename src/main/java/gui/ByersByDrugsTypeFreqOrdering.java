@@ -1,7 +1,8 @@
+
 package gui;
 
 import helper.Helper;
-import model.Order;
+import model.Buyer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,15 +10,16 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-public class BuyersByMedicine extends Page {
-    protected BuyersByMedicine() {
-        super("Buyers by medicine");
-        final Object[] columnHeader = new String[]{"Buyer"};
+public class ByersByDrugsTypeFreqOrdering extends Page {
+    protected ByersByDrugsTypeFreqOrdering() {
+        super("Top buyers ordering");
+        final Object[] columnHeader = new String[]{"Surname", "Name", "Middlename",
+                "Date of birth", "Phone number", "Address"};
         final JRadioButton useName = new JRadioButton("Use name");
-        final JRadioButton useCategory = new JRadioButton("Use category");
+        final JRadioButton useSpecificCategory = new JRadioButton("By specific category of drug");
         final ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(useName);
-        buttonGroup.add(useCategory);
+        buttonGroup.add(useSpecificCategory);
 
         final JLabel nameLabel = new JLabel("Name");
         final JTextField nameTextField = new JTextField();
@@ -30,24 +32,26 @@ public class BuyersByMedicine extends Page {
         final JScrollPane pane = new JScrollPane(orderTable);
         final JButton okButton = new JButton("Ok");
 
-        categoryCheckBox.addItem(model.Type.TINCTURES);
-        categoryCheckBox.addItem(model.Type.POTIONS);
-        categoryCheckBox.addItem(model.Type.SOLUTE);
-        categoryCheckBox.addItem(model.Type.POWDERS);
-        categoryCheckBox.addItem(model.Type.PILLS);
-        categoryCheckBox.addItem(model.Type.OINTMENTS);
+        for(model.Type type : model.Type.values()) {
+            categoryCheckBox.addItem(type);
+        }
 
         okButton.addActionListener(e -> {
-
             try {
-                final List<Order> orderList = useName.isSelected() ?
-                        Helper.getBuyersByMedicineName(nameTextField.getText()) :
-                        Helper.getBuyersByCategory((model.Type) categoryCheckBox.getSelectedItem());
+                final List<Buyer> buyersList = useName.isSelected() ?
+                        Helper.getBuyerBySpecificDrugFreqOrdering(nameTextField.getText()):
+                        Helper.getBuyerBySpecificDrugsTypeFreqOrdering((model.Type) categoryCheckBox.getSelectedItem());
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
-               // orderList.forEach(o -> model.addRow(new Object[]{o.getRecipe().getBuyer(), o.getRecipe().getMedicine()}));
+                buyersList.forEach(buyer -> model.addRow(new Object[]{
+                        buyer.getSurname(),
+                        buyer.getName(),
+                        buyer.getMiddleName(),
+                        buyer.getDateOfBirth(),
+                        buyer.getPhoneNumber(),
+                        buyer.getAddress()}));
                 orderTable.setModel(model);
-                countValueLabel.setText(String.valueOf(orderList.size()));
+                countValueLabel.setText(String.valueOf(buyersList.size()));
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -56,19 +60,16 @@ public class BuyersByMedicine extends Page {
             }
         });
 
-
         backButton.addActionListener(e -> new GuiManager(new ReportPage()).showPage());
 
         final Container container = getContentPane();
         container.add(useName);
-        container.add(useCategory);
+        container.add(useSpecificCategory);
         container.add(nameLabel);
         container.add(nameTextField);
         container.add(categoryLabel);
         container.add(categoryCheckBox);
         container.add(pane);
-        container.add(countLabel);
-        container.add(countValueLabel);
         container.add(okButton);
         container.add(backButton);
     }
