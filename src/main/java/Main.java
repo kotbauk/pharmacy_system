@@ -2,7 +2,7 @@ import connection.JdbcConnection;
 import connection.SshConnect;
 import gui.GuiManager;
 import gui.StartPage;
-import helper.Helper;
+import transation.TransactionUtils;
 
 
 import javax.swing.*;
@@ -27,7 +27,7 @@ public class Main {
         }
         SshConnect ignored = new SshConnect(sshProperties);
         JdbcConnection jdbcConnection = new JdbcConnection(dbProperties);
-        Helper.setConnection(jdbcConnection);
+        TransactionUtils.setConnection(jdbcConnection);
         JFrame.setDefaultLookAndFeelDecorated(true);
          new GuiManager(new StartPage()).showPage();
          System.out.println(UUID.randomUUID().toString());

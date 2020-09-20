@@ -1,9 +1,8 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Buyer;
-import model.Order;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -53,14 +52,14 @@ public class BuyerByDrugOrdering extends Page {
         okButton.addActionListener(e -> {
             try {
                 final List<Buyer> buyersList = useName.isSelected()?
-                        Helper.getBuyersOrderedSpecificDrugInPeriod(nameTextField.getText(),
+                        TransactionUtils.getBuyersOrderedSpecificDrugInPeriod(nameTextField.getText(),
                                 createTimestamp(fromDayDateField.getText(),
                                     fromMonthDateField.getText(),
                                     fromYearDateField.getText()),
                                 createTimestamp(toDayDateField.getText(),
                                         toMonthDateField.getText(),
                                         toYearDateField.getText())) :
-                        Helper.getBuyersOrderedSpecificDrugTypeInPeriod((model.Type) categoryCheckBox.getSelectedItem(),
+                        TransactionUtils.getBuyersOrderedSpecificDrugTypeInPeriod((model.Type) categoryCheckBox.getSelectedItem(),
                                 createTimestamp(fromDayDateField.getText(),
                                 fromMonthDateField.getText(),
                                 fromYearDateField.getText()),

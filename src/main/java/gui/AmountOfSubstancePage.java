@@ -1,7 +1,7 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.VolumeOfSubstanceResult;
 
 import javax.swing.*;
@@ -97,7 +97,7 @@ public class AmountOfSubstancePage extends Page {
             try {
 
                 final VolumeOfSubstanceResult volumeOfSubstanceResult =
-                        Helper.getVolumeOfSubstance(substanceNameTextField.getText(),
+                        TransactionUtils.getVolumeOfSubstance(substanceNameTextField.getText(),
                                 createTimestamp(fromDayDateField.getText(),
                                         fromMonthDateField.getText(),
                                         fromYearDateField.getText()),

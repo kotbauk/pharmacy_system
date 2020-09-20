@@ -1,7 +1,7 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Buyer;
 
 import javax.swing.*;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ByersByDrugsTypeFreqOrdering extends Page {
     protected ByersByDrugsTypeFreqOrdering() {
-        super("Top buyers ordering");
+        super("Top buyers drug ordering");
         final Object[] columnHeader = new String[]{"Surname", "Name", "Middlename",
                 "Date of birth", "Phone number", "Address"};
         final JRadioButton useName = new JRadioButton("Use name");
@@ -20,7 +20,7 @@ public class ByersByDrugsTypeFreqOrdering extends Page {
         final ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(useName);
         buttonGroup.add(useSpecificCategory);
-
+        final String countLabelContent = "Count buyer: ";
         final JLabel nameLabel = new JLabel("Name");
         final JTextField nameTextField = new JTextField();
         final JLabel categoryLabel = new JLabel("Category");
@@ -38,8 +38,8 @@ public class ByersByDrugsTypeFreqOrdering extends Page {
         okButton.addActionListener(e -> {
             try {
                 final List<Buyer> buyersList = useName.isSelected() ?
-                        Helper.getBuyerBySpecificDrugFreqOrdering(nameTextField.getText()):
-                        Helper.getBuyerBySpecificDrugsTypeFreqOrdering((model.Type) categoryCheckBox.getSelectedItem());
+                        TransactionUtils.getBuyerBySpecificDrugFreqOrdering(nameTextField.getText()):
+                        TransactionUtils.getBuyerBySpecificDrugsTypeFreqOrdering((model.Type) categoryCheckBox.getSelectedItem());
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
                 buyersList.forEach(buyer -> model.addRow(new Object[]{
@@ -50,7 +50,7 @@ public class ByersByDrugsTypeFreqOrdering extends Page {
                         buyer.getPhoneNumber(),
                         buyer.getAddress()}));
                 orderTable.setModel(model);
-                countValueLabel.setText(String.valueOf(buyersList.size()));
+                countValueLabel.setText(countLabelContent + String.valueOf(buyersList.size()));
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();

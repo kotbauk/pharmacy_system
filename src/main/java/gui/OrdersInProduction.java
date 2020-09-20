@@ -1,6 +1,6 @@
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Order;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ public class OrdersInProduction extends Page {
         final JScrollPane pane = new JScrollPane(orderTable);
 
         try {
-            final List<Order> orderList = Helper.getOrdersInProduction();
+            final List<Order> orderList = TransactionUtils.getOrdersInProduction();
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
             orderList.forEach(e -> model.addRow(new Object[]{

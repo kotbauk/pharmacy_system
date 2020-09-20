@@ -1,7 +1,7 @@
 package gui;
 
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Role;
 import model.User;
 
@@ -39,7 +39,7 @@ public class GuiManager {
 
 
     public static boolean signIn(String login, String password) throws SQLException {
-        user = Helper.signIn(login, password);
+        user = TransactionUtils.signIn(login, password);
         return user != null;
     }
 }

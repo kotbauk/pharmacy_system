@@ -1,9 +1,7 @@
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Drug;
-import model.GoodsOnWarehouse;
-import model.Type;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -31,8 +29,8 @@ public class DrugsOnEnoughAmount extends Page {
             try {
                 final List<Drug> drugList=
                 useCategory.isSelected()?
-                        Helper.getDrugWithMinimalAmountByType((model.Type) typeComboBox.getSelectedItem()) :
-                        Helper.getAllDrugWithMinimalAmount();
+                        TransactionUtils.getDrugWithMinimalAmountByType((model.Type) typeComboBox.getSelectedItem()) :
+                        TransactionUtils.getAllDrugWithMinimalAmount();
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
                 drugList.forEach(m ->

@@ -1,4 +1,4 @@
-package helper;
+package transation;
 
 import connection.JdbcConnection;
 import model.*;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class Helper {
+public class TransactionUtils {
     private static JdbcConnection connection;
 
     public static JdbcConnection getConnection() {
@@ -16,7 +16,7 @@ public class Helper {
     }
 
     public static void setConnection(JdbcConnection connection) {
-        Helper.connection = connection;
+        TransactionUtils.connection = connection;
     }
 
     public static User signIn(String login, String password) throws SQLException {
@@ -38,7 +38,7 @@ public class Helper {
                 "b.PHONE_NUMBER as buyer_phone_number, b.ADDRESS as buyer_address, b.DATE_OF_BIRTH as buyer_date_of_birth " +
                 "from BUYER b where b.ID in " +
                 "(select p.ID_BUYER from PRESCRIPTIONS p where p.ID_PRESCRIPT in " +
-                "(select o.ID_PRESCRIPT from ORDERS o where sysdate > DATE_OF_RECEIVE and o.status = ('DONE')))";
+                "(select o.ID_PRESCRIPT from ORDERS o where sysdate > (DATE_OF_RECEIVE + interval '1' day) and o.status = ('DONE')))";
         List<Buyer> buyers = AbstractQuery.query(sqlRequest, new DetailedBuyerRowMapper());
         return buyers;
     }

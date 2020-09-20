@@ -1,7 +1,7 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,17 +18,18 @@ public class ComponentsNeededForOrdersPage extends Page {
         final JLabel countValueLabel = new JLabel("Count of components needed for order: ");
         final JScrollPane pane = new JScrollPane(componentsTable);
         final JButton okButton = new JButton("Ok");
+        final String countLabelContent = "Count of components: ";
         countValueLabel.setVisible(false);
         okButton.addActionListener(e -> {
 
             try {
                 final List<model.Component> componentsList =
-                        Helper.getComponentsNeededForOrders();
+                        TransactionUtils.getComponentsNeededForOrders();
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
                 componentsList.forEach(component -> model.addRow(new Object[]{component.getName()}));
                 componentsTable.setModel(model);
-                countValueLabel.setText(countValueLabel.getText() + String.valueOf(componentsList.size()));
+                countValueLabel.setText(countLabelContent + String.valueOf(componentsList.size()));
                 countValueLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {

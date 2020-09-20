@@ -1,9 +1,8 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.InfoAboutDrugWithItsComponents;
-import model.Order;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,12 +22,13 @@ public class InfoAboutComponentDrugPage extends Page {
         final JLabel priceValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(componentsTable);
         final JButton okButton = new JButton("Ok");
+        final String priceLabelContent = "Count of awaiting buyer: ";
         priceLabel.setVisible(false);
         okButton.addActionListener(e -> {
             try {
                 final List<InfoAboutDrugWithItsComponents> infoAboutComponentsList =
-                        Helper.getInfoAboutDrugsWithItsComponents(nameTextField.getText());
-                Double priceDrug = Helper.getPriceOfSpecificDrug(nameTextField.getText());
+                        TransactionUtils.getInfoAboutDrugsWithItsComponents(nameTextField.getText());
+                Double priceDrug = TransactionUtils.getPriceOfSpecificDrug(nameTextField.getText());
 
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
@@ -38,7 +38,7 @@ public class InfoAboutComponentDrugPage extends Page {
                         o.getAmount()
                 }));
                 componentsTable.setModel(model);
-                priceLabel.setText(priceLabel.getText() + priceDrug);
+                priceLabel.setText(priceLabelContent + priceDrug);
                 priceLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {

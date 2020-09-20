@@ -1,8 +1,7 @@
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Drug;
-import model.GoodsOnWarehouse;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class DrugOnCriticalAmountOrEnded extends Page {
     protected DrugOnCriticalAmountOrEnded() {
-        super("Drugs on critical amount");
+        super("Drugs on critical amount or ended");
         final Object[] columnHeader = new String[]{
                 "Drug name",
                 "DRUG_TYPE",
@@ -25,7 +24,7 @@ public class DrugOnCriticalAmountOrEnded extends Page {
 
         try {
             final List<Drug> medicineList =
-                    Helper.getAllDrugsWithMinimalAMountOrEmpted();
+                    TransactionUtils.getAllDrugsWithMinimalAMountOrEmpted();
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
             medicineList.forEach(m -> model.addRow(new Object[]{

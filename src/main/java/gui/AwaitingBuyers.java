@@ -1,7 +1,7 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Buyer;
 
 import javax.swing.*;
@@ -20,12 +20,12 @@ public class AwaitingBuyers extends Page {
         final ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(useAllCategory);
         buttonGroup.add(useSpecificCategory);
-
+        final String countLabelContent = "Count of awaiting buyer: ";
         final JLabel categoryLabel = new JLabel("Category");
         final JComboBox<model.Type> categoryCheckBox = new JComboBox<>();
         final JTable orderTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countLabel = new JLabel("Count of awaiting buyer: ");
+        final JLabel countLabel = new JLabel();
         final JLabel countValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(orderTable);
         final JButton okButton = new JButton("Ok");
@@ -37,8 +37,8 @@ public class AwaitingBuyers extends Page {
         okButton.addActionListener(e -> {
             try {
                 final List<Buyer> buyersList = useAllCategory.isSelected() ?
-                        Helper.getAllAwaitingBuyers():
-                        Helper.getAwaitingBuyerByDrugType((model.Type) categoryCheckBox.getSelectedItem());
+                        TransactionUtils.getAllAwaitingBuyers():
+                        TransactionUtils.getAwaitingBuyerByDrugType((model.Type) categoryCheckBox.getSelectedItem());
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
                 buyersList.forEach(buyer -> model.addRow(new Object[]{
@@ -49,7 +49,7 @@ public class AwaitingBuyers extends Page {
                         buyer.getPhoneNumber(),
                         buyer.getAddress()}));;
                 orderTable.setModel(model);
-                countLabel.setText(countLabel.getText() + buyersList.size());
+                countLabel.setText(countLabelContent+ buyersList.size());
                 countLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {

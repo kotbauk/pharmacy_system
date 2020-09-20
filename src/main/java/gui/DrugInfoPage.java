@@ -1,9 +1,8 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.InfoAboutDrug;
-import model.Order;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -29,8 +28,8 @@ public class DrugInfoPage extends Page {
 
         try {
             final InfoAboutDrug infoAboutDrug =
-                    Helper.getInfoAboutSpecificDrug(nameTextField.getText());
-            final List<model.Component> componentList = Helper.getAllComponentsByDrugName(nameTextField.getText());
+                    TransactionUtils.getInfoAboutSpecificDrug(nameTextField.getText());
+            final List<model.Component> componentList = TransactionUtils.getAllComponentsByDrugName(nameTextField.getText());
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
             componentList.forEach(component -> model.addRow(new Object[]{

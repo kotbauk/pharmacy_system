@@ -1,19 +1,18 @@
 package query;
 
 import connection.JdbcConnection;
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Role;
 import model.Type;
 
 import java.sql.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 abstract public class AbstractQuery {
-    private static final JdbcConnection connection = Helper.getConnection();
+    private static final JdbcConnection connection = TransactionUtils.getConnection();
 
     public static <E> List<E> query(String sql, List<Object> params, RowMapper<E> rowMapper) throws SQLException {
         Connection conn = getConnection().getConnection();

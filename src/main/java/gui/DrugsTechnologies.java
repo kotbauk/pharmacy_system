@@ -1,8 +1,7 @@
 
 package gui;
 
-import helper.Helper;
-import model.Order;
+import transation.TransactionUtils;
 import model.Technologies;
 
 import javax.swing.*;
@@ -41,11 +40,11 @@ public class DrugsTechnologies extends Page {
             try {
                 List<Technologies> technologiesList = null;
                 if (useName.isSelected()) {
-                    technologiesList = Helper.getAllTechnologiesForSpecificDrugName(nameTextField.getText());
+                    technologiesList = TransactionUtils.getAllTechnologiesForSpecificDrugName(nameTextField.getText());
                 } else if (useCategory.isSelected()) {
-                    technologiesList = Helper.getAllTechnologiesForSpecificDrugType((model.Type) categoryCheckBox.getSelectedItem());
+                    technologiesList = TransactionUtils.getAllTechnologiesForSpecificDrugType((model.Type) categoryCheckBox.getSelectedItem());
                 } else if (useAll.isSelected()) {
-                    technologiesList = Helper.getAllTechnologiesForDrugInProduction();
+                    technologiesList = TransactionUtils.getAllTechnologiesForDrugInProduction();
                 }
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);

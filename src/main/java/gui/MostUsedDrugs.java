@@ -1,7 +1,7 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.DrugsWithAmountResults;
 
 import javax.swing.*;
@@ -30,8 +30,8 @@ public class MostUsedDrugs extends Page {
             try {
                 final List<DrugsWithAmountResults> drugList=
                         useCategory.isSelected()?
-                                Helper.getMostUsedDrugByType((model.Type) typeComboBox.getSelectedItem()) :
-                                Helper.getMostUsedDrugs();
+                                TransactionUtils.getMostUsedDrugByType((model.Type) typeComboBox.getSelectedItem()) :
+                                TransactionUtils.getMostUsedDrugs();
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
                 drugList.forEach(m ->

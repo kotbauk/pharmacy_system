@@ -1,9 +1,8 @@
 
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Buyer;
-import model.Order;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,11 +15,10 @@ public class OverdueBuyers extends Page {
         super("Overdue buyers");
         final Object[] columnHeader = new String[]{"Surname", "Name", "Middlename",
                 "Date of birth", "Phone number", "Address"};
-        final JRadioButton useName = new JRadioButton("Use name");
-        final JLabel nameLabel = new JLabel("Name");
         final JTable buyersTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countLabel = new JLabel("Number of overdue buyers: ");
+        final JLabel countLabel = new JLabel();
+        final String countLabelContent = "Number of overdue buyers: ";
         final JLabel countValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(buyersTable);
         final JButton okButton = new JButton("Ok");
@@ -30,7 +28,7 @@ public class OverdueBuyers extends Page {
 
             try {
                 final List<Buyer> buyersList =
-                        Helper.getAllOverdueBuyers();
+                        TransactionUtils.getAllOverdueBuyers();
                 final DefaultTableModel model = new DefaultTableModel();
                 model.setColumnIdentifiers(columnHeader);
                 buyersList.forEach(buyer -> model.addRow(new Object[]{
@@ -41,7 +39,7 @@ public class OverdueBuyers extends Page {
                         buyer.getPhoneNumber(),
                         buyer.getAddress()}));
                 buyersTable.setModel(model);
-                countLabel.setText(countLabel.getText() + buyersList.size());
+                countLabel.setText(countLabelContent + buyersList.size());
                 countLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {

@@ -1,6 +1,6 @@
 package gui;
 
-import helper.Helper;
+import transation.TransactionUtils;
 import model.Role;
 
 import javax.swing.*;
@@ -26,14 +26,13 @@ public class RegisterPage extends Page {
         final JButton okButton = new JButton("Ok");
         final JButton backButton = new JButton("Back");
 
-        roleComboBox.addItem(Role.HEAD_OF_PHARMACY);
         roleComboBox.addItem(Role.PHARMACIST_SELLER);
         roleComboBox.addItem(Role.PHARMACIST_TECHNOLOGIST);
         //roleComboBox.addItem(Role.DOCTOR);
 
         okButton.addActionListener(e -> {
             try {
-                Helper.register((Role) roleComboBox.getSelectedItem(), loginTextField.getText(), passwordTextField.getText(),
+                TransactionUtils.register((Role) roleComboBox.getSelectedItem(), loginTextField.getText(), passwordTextField.getText(),
                         surnameTextField.getText(), middleNameTextField.getText(), nameTextField.getText());
             } catch (SQLException ex) {
                 ex.printStackTrace();
