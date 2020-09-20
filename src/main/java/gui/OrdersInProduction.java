@@ -12,7 +12,7 @@ import java.util.List;
 public class OrdersInProduction extends Page {
     protected OrdersInProduction() {
         super("Orders in production");
-        final Object[] columnHeader = new String[]{"Order", "Seller", "Technologist", "Status", "Date of order"};
+        final Object[] columnHeader = new String[]{"Order ID", "Seller", "Technologist", "Status", "Date of order"};
         final JTable orderTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JLabel countLabel = new JLabel("Count");

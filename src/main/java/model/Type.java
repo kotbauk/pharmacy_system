@@ -1,5 +1,8 @@
 package model;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Type implements HasId<String> {
     PILLS("PILLS"),
     OINTMENTS("OINTMENTS"),
@@ -18,4 +21,13 @@ public enum Type implements HasId<String> {
     public String getId() {
         return id;
     }
+
+    public static List<Type> getTypesOfReadyDrug() {
+        return Arrays.asList(Type.PILLS, Type.TINCTURES, Type.OINTMENTS);
+    }
+
+    public static List<Type> getTypesOfManufacturedDrug() {
+        return Arrays.asList(Type.SOLUTE, Type.OINTMENTS, Type.POWDERS, Type.POTIONS);
+    }
+
 }

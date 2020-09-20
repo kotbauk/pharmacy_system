@@ -19,11 +19,11 @@ public class InfoAboutComponentDrugPage extends Page {
         final JTextField nameTextField = new JTextField();
         final JTable componentsTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel priceLabel = new JLabel("Drugs price");
+        JLabel priceLabel = new JLabel("Drugs price: ");
         final JLabel priceValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(componentsTable);
         final JButton okButton = new JButton("Ok");
-
+        priceLabel.setVisible(false);
         okButton.addActionListener(e -> {
             try {
                 final List<InfoAboutDrugWithItsComponents> infoAboutComponentsList =
@@ -38,7 +38,8 @@ public class InfoAboutComponentDrugPage extends Page {
                         o.getAmount()
                 }));
                 componentsTable.setModel(model);
-                priceValueLabel.setText(String.valueOf(priceDrug));
+                priceLabel.setText(priceLabel.getText() + priceDrug);
+                priceLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -46,7 +47,6 @@ public class InfoAboutComponentDrugPage extends Page {
                         "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
 
         backButton.addActionListener(e -> new GuiManager(new ReportPage()).showPage());
 

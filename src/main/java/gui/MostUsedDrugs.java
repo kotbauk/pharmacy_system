@@ -17,8 +17,8 @@ public class MostUsedDrugs extends Page {
         final JTable drugTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JComboBox<model.Type> typeComboBox = new JComboBox<>();
-        final JCheckBox useCategory = new JCheckBox();
-        final JLabel typeLabel = new JLabel("Type");
+        final JCheckBox useCategory = new JCheckBox("Search in all categories");
+        final JLabel typeLabel = new JLabel("Drug type");
         final JScrollPane pane = new JScrollPane(drugTable);
         final JButton okButton = new JButton("Ok");
 

@@ -25,11 +25,11 @@ public class AwaitingBuyers extends Page {
         final JComboBox<model.Type> categoryCheckBox = new JComboBox<>();
         final JTable orderTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countLabel = new JLabel("Count");
+        final JLabel countLabel = new JLabel("Count of awaiting buyer: ");
         final JLabel countValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(orderTable);
         final JButton okButton = new JButton("Ok");
-
+        countLabel.setVisible(false);
         for(model.Type type : model.Type.values()) {
             categoryCheckBox.addItem(type);
         }
@@ -49,7 +49,8 @@ public class AwaitingBuyers extends Page {
                         buyer.getPhoneNumber(),
                         buyer.getAddress()}));;
                 orderTable.setModel(model);
-                countValueLabel.setText(String.valueOf(buyersList.size()));
+                countLabel.setText(countLabel.getText() + buyersList.size());
+                countLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();

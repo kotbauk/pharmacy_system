@@ -11,7 +11,7 @@ public class ReportPage extends Page {
         final JButton mostUsedDrugs = new JButton("Most used drugs");
         final JButton amountOfSubstance = new JButton("Amount of substance");
         final JButton buyerByDrugOrderingButton = new JButton("Buyers by drugs order");
-        final JButton componentsNeededForOrders = new JButton("Components needed for oreders");
+        final JButton componentsNeededForOrders = new JButton("Components needed for orders");
         final JButton ordersInProductionButton = new JButton("Orders in production");
         final JButton drugsOnEnoughAmount = new JButton("Drugs on enough amount");
         final JButton drugsOnCriticalAmount = new JButton("Drugs on critical amount");

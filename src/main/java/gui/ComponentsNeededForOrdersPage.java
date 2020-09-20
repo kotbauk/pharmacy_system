@@ -11,14 +11,14 @@ import java.util.List;
 
 public class ComponentsNeededForOrdersPage extends Page {
     protected ComponentsNeededForOrdersPage() {
-        super("Components needed for order");
+        super("Components needed for orders");
         final Object[] columnHeader = new String[]{"Component name"};
         final JTable componentsTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countValueLabel = new JLabel();
+        final JLabel countValueLabel = new JLabel("Count of components needed for order: ");
         final JScrollPane pane = new JScrollPane(componentsTable);
         final JButton okButton = new JButton("Ok");
-
+        countValueLabel.setVisible(false);
         okButton.addActionListener(e -> {
 
             try {
@@ -28,7 +28,8 @@ public class ComponentsNeededForOrdersPage extends Page {
                 model.setColumnIdentifiers(columnHeader);
                 componentsList.forEach(component -> model.addRow(new Object[]{component.getName()}));
                 componentsTable.setModel(model);
-                countValueLabel.setText(String.valueOf(componentsList.size()));
+                countValueLabel.setText(countValueLabel.getText() + String.valueOf(componentsList.size()));
+                countValueLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();

@@ -14,7 +14,7 @@ public class DrugOnCriticalAmountOrEnded extends Page {
     protected DrugOnCriticalAmountOrEnded() {
         super("Drugs on critical amount");
         final Object[] columnHeader = new String[]{
-                "Medicine",
+                "Drug name",
                 "DRUG_TYPE",
                 "UNIT",
                 "PRICE_PER_UNIT"};

@@ -20,10 +20,11 @@ public class OverdueBuyers extends Page {
         final JLabel nameLabel = new JLabel("Name");
         final JTable buyersTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countLabel = new JLabel("Count");
+        final JLabel countLabel = new JLabel("Number of overdue buyers: ");
         final JLabel countValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(buyersTable);
         final JButton okButton = new JButton("Ok");
+        countLabel.setVisible(false);
 
         okButton.addActionListener(e -> {
 
@@ -40,7 +41,8 @@ public class OverdueBuyers extends Page {
                         buyer.getPhoneNumber(),
                         buyer.getAddress()}));
                 buyersTable.setModel(model);
-                countValueLabel.setText(String.valueOf(buyersList.size()));
+                countLabel.setText(countLabel.getText() + buyersList.size());
+                countLabel.setVisible(true);
                 validateTree();
             } catch (SQLException ex) {
                 ex.printStackTrace();

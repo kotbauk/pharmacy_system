@@ -27,7 +27,6 @@ public class ByersByDrugsTypeFreqOrdering extends Page {
         final JComboBox<model.Type> categoryCheckBox = new JComboBox<>();
         final JTable orderTable = new JTable();
         final JButton backButton = new JButton("Back");
-        final JLabel countLabel = new JLabel("Count");
         final JLabel countValueLabel = new JLabel();
         final JScrollPane pane = new JScrollPane(orderTable);
         final JButton okButton = new JButton("Ok");

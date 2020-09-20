@@ -33,12 +33,9 @@ public class DrugsTechnologies extends Page {
         final JScrollPane pane = new JScrollPane(technologiesTable);
         final JButton okButton = new JButton("Ok");
 
-        categoryCheckBox.addItem(model.Type.TINCTURES);
-        categoryCheckBox.addItem(model.Type.POTIONS);
-        categoryCheckBox.addItem(model.Type.SOLUTE);
-        categoryCheckBox.addItem(model.Type.POWDERS);
-        categoryCheckBox.addItem(model.Type.PILLS);
-        categoryCheckBox.addItem(model.Type.OINTMENTS);
+        for (model.Type type : model.Type.getTypesOfManufacturedDrug()) {
+            categoryCheckBox.addItem(type);
+        }
 
         okButton.addActionListener(e -> {
             try {

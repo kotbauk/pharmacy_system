@@ -10,7 +10,7 @@ public class InfoAboutDrugWithItsComponentsRowMapper implements RowMapper<InfoAb
     @Override
     public InfoAboutDrugWithItsComponents mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new InfoAboutDrugWithItsComponents(rs.getString("name"),
-                rs.getDouble("price"),
+                rs.getDouble("component_price"),
                 rs.getInt("amount"));
     }
 }

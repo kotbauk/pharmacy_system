@@ -45,7 +45,8 @@ public class Helper {
 
     //2
     public static List<Buyer> getAllAwaitingBuyers() throws SQLException {
-        String sqlRequest = "select b.ID, b.SURNAME,b.MIDDLENAME, b.PHONE_NUMBER, b.ADDRESS,b.DATE_OF_BIRTH\n" +
+        String sqlRequest = "select b.ID as buyer_id, b.NAME as buyer_name, b.SURNAME as buyer_surname, b.MIDDLENAME as buyer_middlename, \n" +
+                "b.PHONE_NUMBER as buyer_phone_number, b.ADDRESS as buyer_address, b.DATE_OF_BIRTH as buyer_date_of_birth\n" +
                 "from BUYER b where b.ID in\n" +
                 "(select pr.ID_BUYER from PRESCRIPTIONS pr where pr.ID_PRESCRIPT in\n" +
                 "(select o.ID_PRESCRIPT from ORDERS o where o.STATUS=('AWAITING')))";
@@ -56,10 +57,11 @@ public class Helper {
 
     //2
     public static List<Buyer> getAwaitingBuyerByDrugType(Type type) throws SQLException {
-        String sqlRequest = "select b.ID,b.SURNAME,b.MIDDLENAME,b.PHONE_NUMBER, b.ADDRESS,b.DATE_OF_BIRTH\n" +
+        String sqlRequest = "select b.ID as buyer_id, b.NAME as buyer_name, b.SURNAME as buyer_surname, b.MIDDLENAME as buyer_middlename,\n" +
+                "b.PHONE_NUMBER as buyer_phone_number, b.ADDRESS as buyer_address, b.DATE_OF_BIRTH as buyer_date_of_birth\n" +
                 "from BUYER b where b.ID in\n" +
                 "    (select pr.ID_BUYER from PRESCRIPTIONS pr where pr.ID_DRUG in\n" +
-                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where DRUG_TYPE=?)\n" +
+                "        (select md.ID_DRUG from MANUFACTURED_DRUG md where DRUG_TYPE =?)\n" +
                 "    and pr.ID_PRESCRIPT in\n" +
                 "        (select o.ID_PRESCRIPT from ORDERS o where o.STATUS=('AWAITING')))";
         List<Object> params = Collections.singletonList(type);
@@ -235,7 +237,7 @@ public class Helper {
 
     //10
     public static List<Technologies> getAllTechnologiesForSpecificDrugType(Type type) throws SQLException {
-        String sqlRequest = "select t.PRODUCTION_ACTION as action, t.PRODUCTION_TIME as production_time, t.ID_TECHNOLOGY as id from TECHNOLOGIES t " +
+        String sqlRequest = "select t.PRODUCTION_ACTION as production, t.PRODUCTION_TIME as production_time, t.ID_TECHNOLOGY as id from TECHNOLOGIES t " +
                 "where t.ID_DRUG in\n" +
                 "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.DRUG_TYPE=?)";
 
@@ -246,7 +248,8 @@ public class Helper {
 
     //10
     public static List<Technologies> getAllTechnologiesForSpecificDrugName(String name) throws SQLException {
-        String sqlRequest = "select t.PRODUCTION_ACTION, t.PRODUCTION_TIME,t.ID_TECHNOLOGY from TECHNOLOGIES t where t.ID_DRUG in\n" +
+        String sqlRequest = "select t.PRODUCTION_ACTION as production, t.PRODUCTION_TIME as production_time, t.ID_TECHNOLOGY as id " +
+                "from TECHNOLOGIES t where t.ID_DRUG in\n" +
                 "(select md.ID_DRUG from MANUFACTURED_DRUG md where md.name =? )";
 
         List<Object> params = Collections.singletonList(name);
@@ -256,13 +259,13 @@ public class Helper {
 
     //10
     public static List<Technologies> getAllTechnologiesForDrugInProduction() throws SQLException {
-        String sqlRequest = "select t.PRODUCTION_ACTION, t.PRODUCTION_TIME,t.ID_TECHNOLOGY\n" +
+        String sqlRequest = "select t.PRODUCTION_ACTION as production, t.PRODUCTION_TIME as production_time, t.ID_TECHNOLOGY as id\n" +
                 "       from TECHNOLOGIES t where t.ID_DRUG in\n" +
                 "        (select p.id_drug\n" +
                 "              from prescriptions p\n" +
                 "              where p.id_prescript in\n" +
                 "                    (select o.id_prescript from orders o\n" +
-                "                    where sysdate <= date_of_manufacturing));";
+                "                    where sysdate <= date_of_manufacturing))";
 
         List<Technologies> technologies = AbstractQuery.query(sqlRequest, new TechnologiesRowMapper());
 
@@ -271,7 +274,7 @@ public class Helper {
 
     //11
     public static List<InfoAboutDrugWithItsComponents> getInfoAboutDrugsWithItsComponents(String drugName) throws SQLException {
-        String sqlRequest = "SELECT COMPONENTS.NAME, COMPONENTS.PRICE_PER_UNIT*CMPSTN.AMOUNT as component_price, CMPSTN.AMOUNT as amount FROM COMPONENTS\n" +
+        String sqlRequest = "SELECT COMPONENTS.NAME as name, COMPONENTS.PRICE_PER_UNIT*CMPSTN.AMOUNT as component_price, CMPSTN.AMOUNT as amount FROM COMPONENTS\n" +
                 "    JOIN (SELECT CMPSTN.ID_COMPONENT, CMPSTN.AMOUNT FROM COMPOSITION CMPSTN WHERE ID_DRUG IN\n" +
                 "                    (SELECT MND.ID_DRUG FROM MANUFACTURED_DRUG MND WHERE MND.NAME = ?))" +
                 "CMPSTN ON CMPSTN.ID_COMPONENT = COMPONENTS.ID_COMPONENT";
@@ -326,17 +329,17 @@ public class Helper {
     }
 
     //13
-    public static List<InfoAboutDrug> getInfoAboutSpecificDrug(String drugName) throws SQLException {
+    public static InfoAboutDrug getInfoAboutSpecificDrug(String drugName) throws SQLException {
         String sqlRequest = "SELECT DI.type, DI.name, DI.price, DI.action, DI.AMOUNT FROM DRUG_INFO DI WHERE DI.name = ?";
 
         List<Object> params = Collections.singletonList(drugName);
         List<InfoAboutDrug> infoAboutDrugs = AbstractQuery.query(sqlRequest, params, new InfoAboutDrugRowMapper());
-        return infoAboutDrugs;
+        return infoAboutDrugs.get(0);
     }
 
     //13
     public static List<Component> getAllComponentsByDrugName(String drugName) throws SQLException {
-        String sqlRequest = "SELECT C.ID_COMPONENT, C.NAME as name, C.PRICE_PER_UNIT as price, C.UNIT as unit, C.TYPE as type FROM COMPONENTS C\n" +
+        String sqlRequest = "SELECT C.ID_COMPONENT as id, C.NAME as name, C.PRICE_PER_UNIT as price, C.UNIT as unit, C.TYPE as type FROM COMPONENTS C\n" +
                 "    WHERE ID_COMPONENT IN \n" +
                 "          (SELECT CMPST.ID_COMPONENT FROM COMPOSITION CMPST WHERE CMPST.ID_DRUG IN\n" +
                 "                (SELECT MAN_DRUG.ID_DRUG FROM MANUFACTURED_DRUG MAN_DRUG WHERE MAN_DRUG.NAME =?))";

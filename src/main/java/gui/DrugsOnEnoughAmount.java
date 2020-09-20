@@ -14,11 +14,11 @@ import java.util.List;
 public class DrugsOnEnoughAmount extends Page {
     protected DrugsOnEnoughAmount() {
         super("Drugs on enough amount");
-        final Object[] columnHeader = new String[]{"Medicine", "Count"};
+        final Object[] columnHeader = new String[]{"Drug name", "Count"};
         final JTable drugTable = new JTable();
         final JButton backButton = new JButton("Back");
         final JComboBox<model.Type> typeComboBox = new JComboBox<>();
-        final JCheckBox useCategory = new JCheckBox();
+        final JCheckBox useCategory = new JCheckBox("Find specific category");
         final JLabel typeLabel = new JLabel("Type");
         final JScrollPane pane = new JScrollPane(drugTable);
         final JButton okButton = new JButton("Ok");

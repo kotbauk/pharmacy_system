@@ -14,30 +14,35 @@ import java.util.List;
 public class DrugInfoPage extends Page {
     protected DrugInfoPage() {
     super("Information about drug");
-    final Object[] columnHeader = new String[]{"Name", "Type", "Production action",
-            "Components", "Price", "Amount"};
-
-    final JLabel nameLabel = new JLabel("Name");
+    final Object[] columnHeader = new String[]{"Components", "Price component type"};
+    final JLabel nameLabel = new JLabel("Drug name");
     final JTextField nameTextField = new JTextField();
-    final JTable orderTable = new JTable();
+    final JTable componentsTable = new JTable();
     final JButton backButton = new JButton("Back");
-    final JLabel countLabel = new JLabel("Count");
-    final JLabel countValueLabel = new JLabel();
-    final JScrollPane pane = new JScrollPane(orderTable);
+    final JScrollPane pane = new JScrollPane(componentsTable);
     final JButton okButton = new JButton("Ok");
+    final JLabel drugTypeLabel = new JLabel();
+    final JTextArea productionActionTextArea = new JTextArea();
+    productionActionTextArea.setEditable(false);
 
     okButton.addActionListener(e -> {
 
         try {
-            final List<InfoAboutDrug> infoAboutDrugList =
+            final InfoAboutDrug infoAboutDrug =
                     Helper.getInfoAboutSpecificDrug(nameTextField.getText());
             final List<model.Component> componentList = Helper.getAllComponentsByDrugName(nameTextField.getText());
             final DefaultTableModel model = new DefaultTableModel();
             model.setColumnIdentifiers(columnHeader);
-            infoAboutDrugList.forEach(infoAboutDrug -> model.addRow(new Object[]{infoAboutDrug.getType(),
-                    infoAboutDrug.getManufacturingAction(),
-                    infoAboutDrug.getPricePerUnit(), infoAboutDrug.getAmountOnWarehouse(), componentList}));
-            orderTable.setModel(model);
+            componentList.forEach(component -> model.addRow(new Object[]{
+                    component.getName(),
+                    component.getPricePerUnit()}));
+            componentsTable.setModel(model);
+            drugTypeLabel.setText("Drug type: " + infoAboutDrug.getType().toString());
+            productionActionTextArea.setText("Production action: " + infoAboutDrug.getManufacturingAction());
+            drugTypeLabel.setVisible(true);
+            productionActionTextArea.setVisible(true);
+            drugTypeLabel.repaint();
+            productionActionTextArea.repaint();
             validateTree();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -49,6 +54,10 @@ public class DrugInfoPage extends Page {
     backButton.addActionListener(e -> new GuiManager(new ReportPage()).showPage());
 
     final Container container = getContentPane();
+    drugTypeLabel.setVisible(false);
+    productionActionTextArea.setVisible(false);
+    container.add(drugTypeLabel);
+    container.add(productionActionTextArea);
     container.add(nameLabel);
     container.add(nameTextField);
     container.add(pane);
